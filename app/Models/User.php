@@ -94,4 +94,12 @@ class User extends Authenticatable
     {
         return $this->status === 'active';
     }
+
+    /**
+     * User's consultation bookings.
+     */
+    public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Booking::class)->latest();
+    }
 }

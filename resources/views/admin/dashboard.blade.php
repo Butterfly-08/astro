@@ -25,7 +25,14 @@
             <div>
                 <span class="text-muted small text-uppercase fw-semibold">Astrologers</span>
                 <h3 class="fw-bold my-1 text-dark">{{ number_format($totalAstrologers) }}</h3>
-                <small class="text-muted"><i class="bi bi-stars me-1 text-warning"></i> Certified Experts</small>
+                <div class="d-flex align-items-center gap-1">
+                    <small class="text-success"><i class="bi bi-patch-check-fill me-1"></i>{{ $activeAstrologers }} Active</small>
+                    @if($pendingAstrologers > 0)
+                        <a href="{{ route('admin.astrologers.index', ['status' => 'pending']) }}" class="badge bg-danger text-decoration-none ms-1">
+                            {{ $pendingAstrologers }} Pending
+                        </a>
+                    @endif
+                </div>
             </div>
             <div class="stat-icon icon-gold">
                 <i class="bi bi-star-fill"></i>
@@ -39,7 +46,7 @@
             <div>
                 <span class="text-muted small text-uppercase fw-semibold">Consultation Services</span>
                 <h3 class="fw-bold my-1 text-dark">{{ number_format($totalServices) }}</h3>
-                <small class="text-muted"><i class="bi bi-gem me-1"></i> Active Offerings</small>
+                <small class="text-muted"><i class="bi bi-gem me-1"></i> {{ $activeServices }} Active Disciplines</small>
             </div>
             <div class="stat-icon icon-blue">
                 <i class="bi bi-card-checklist"></i>
@@ -126,13 +133,13 @@
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 rounded-3 border border-warning bg-warning bg-opacity-10">
+                <div class="mt-4 p-3 rounded-3 border border-success bg-success bg-opacity-10">
                     <div class="d-flex gap-2">
-                        <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
                         <div>
-                            <div class="fw-bold text-dark">Phase 1 Complete</div>
+                            <div class="fw-bold text-dark">Phase 2 Active: Astrologer & Service Ecosystem</div>
                             <small class="text-muted">
-                                Dual-authentication, distinct databases, middleware protection, and responsive Bootstrap 5 styling are fully implemented and verified. Subsequent phases will integrate Astrologer CRUD, Appointment Booking with Double-booking Prevention, E-Commerce Shop, Cart, and REST APIs.
+                                Dual-authentication, Astrologer CRUD, Services catalog, public directory & filters, weekly availability scheduling, and approval workflows are operational. Subsequent phases will integrate Appointment Booking with double-booking prevention, shop catalog, cart, orders, and REST APIs.
                             </small>
                         </div>
                     </div>
@@ -172,6 +179,62 @@
         </div>
     </div>
 </div>
+
+@if($pendingAstrologers > 0)
+<!-- Pending Astrologer Approvals Alert Section -->
+<div class="card border-0 shadow-sm rounded-3 mb-4 border-start border-warning border-4">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle-fill me-1"></i> Action Required</span>
+            <h6 class="mb-0 fw-bold">Astrologer Applications Pending Approval ({{ $pendingAstrologers }})</h6>
+        </div>
+        <a href="{{ route('admin.astrologers.index', ['status' => 'pending']) }}" class="btn btn-sm btn-outline-warning text-dark fw-semibold">
+            View All Pending <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Applicant</th>
+                        <th>Specializations</th>
+                        <th>Experience</th>
+                        <th>Rates (C/A/V)</th>
+                        <th>Applied On</th>
+                        <th class="pe-4 text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($pendingAstrologersList as $pendingAstro)
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-semibold text-dark">{{ $pendingAstro->display_name }}</div>
+                                <div class="small text-muted">{{ $pendingAstro->email }} &bull; {{ $pendingAstro->phone ?? 'No phone' }}</div>
+                            </td>
+                            <td>
+                                <span class="small">{{ Str::limit($pendingAstro->specializations, 35) }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ $pendingAstro->experience_years }} yrs</span>
+                            </td>
+                            <td>
+                                <span class="small text-muted">₹{{ number_format($pendingAstro->chat_rate) }} / ₹{{ number_format($pendingAstro->call_rate) }} / ₹{{ number_format($pendingAstro->video_rate) }}</span>
+                            </td>
+                            <td class="small text-muted">{{ $pendingAstro->created_at->diffForHumans() }}</td>
+                            <td class="pe-4 text-end">
+                                <a href="{{ route('admin.astrologers.show', $pendingAstro) }}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-search me-1"></i> Review & Approve
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Recent Users Table -->
 <div class="card border-0 shadow-sm rounded-3">

@@ -26,13 +26,18 @@ class DashboardController extends Controller
             ->whereIn('status', ['pending', 'confirmed'])
             ->count() : 0;
         $wishlistCount = Schema::hasTable('wishlists') ? \Illuminate\Support\Facades\DB::table('wishlists')->where('user_id', $user->id)->count() : 0;
+        
+        $recentBookings = Schema::hasTable('bookings') 
+            ? \App\Models\Booking::where('user_id', $user->id)->with('astrologer')->latest()->take(3)->get() 
+            : collect();
 
         return view('user.dashboard', compact(
             'user',
             'totalOrders',
             'totalBookings',
             'upcomingBookings',
-            'wishlistCount'
+            'wishlistCount',
+            'recentBookings'
         ));
     }
 }

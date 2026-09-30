@@ -15,7 +15,7 @@
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <a href="#astrologers" class="btn btn-astro-gold me-2">
+                <a href="{{ route('astrologers.index') }}" class="btn btn-astro-gold me-2">
                     <i class="bi bi-calendar-plus me-1"></i> Book Consultation
                 </a>
             </div>
@@ -46,7 +46,7 @@
                         <i class="bi bi-person-vcard fs-5 text-muted"></i>
                         <span>My Profile</span>
                     </a>
-                    <a href="#bookings" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
+                    <a href="{{ route('user.bookings.index') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-calendar2-check fs-5 text-muted"></i>
                             <span>My Bookings</span>
@@ -156,6 +156,50 @@
                 </div>
             </div>
 
+            <!-- Recent Consultation Bookings -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-calendar-check text-primary me-2"></i> Recent Consultation Appointments</h6>
+                    <a href="{{ route('user.bookings.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    @if($recentBookings->isEmpty())
+                        <div class="p-4 text-center text-muted">
+                            <i class="bi bi-calendar-x fs-3 d-block mb-2 opacity-50"></i>
+                            <div class="small mb-2">You have no consultation bookings yet.</div>
+                            <a href="{{ route('astrologers.index') }}" class="btn btn-sm btn-astro-gold">Consult an Astrologer</a>
+                        </div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0 small">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Astrologer</th>
+                                        <th>Date & Time</th>
+                                        <th>Mode</th>
+                                        <th>Status</th>
+                                        <th class="pe-3 text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($recentBookings as $rb)
+                                        <tr>
+                                            <td class="ps-3 fw-semibold text-dark">{{ $rb->astrologer->display_name }}</td>
+                                            <td>{{ $rb->booking_date->format('d M Y') }} &bull; {{ $rb->formatted_time_slot }}</td>
+                                            <td class="text-capitalize">{{ $rb->consultation_type }}</td>
+                                            <td>{!! $rb->status_badge !!}</td>
+                                            <td class="pe-3 text-end">
+                                                <a href="{{ route('user.bookings.show', $rb) }}" class="btn btn-sm btn-light">View</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
             <!-- Profile Summary & Phase 1 Confirmation -->
             <div class="card border-0 shadow-sm rounded-3 mb-4">
                 <div class="card-header bg-white border-bottom py-3">
@@ -204,7 +248,7 @@
                                 <p class="small text-muted mb-0">Speak with experienced Vedic astrologers, tarot readers & numerologists.</p>
                             </div>
                         </div>
-                        <a href="#astrologers" class="btn btn-sm btn-astro-gold">Browse Astrologers</a>
+                        <a href="{{ route('astrologers.index') }}" class="btn btn-sm btn-astro-gold">Browse Astrologers</a>
                     </div>
                 </div>
                 <div class="col-md-6">

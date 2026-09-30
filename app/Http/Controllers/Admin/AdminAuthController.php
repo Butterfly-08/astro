@@ -44,7 +44,7 @@ class AdminAuthController extends Controller
             $request->session()->regenerate();
 
             // Update last login timestamp
-            Auth::guard('admin')->user()->update([
+            Admin::whereKey(Auth::guard('admin')->id())->update([
                 'last_login_at' => now(),
             ]);
 

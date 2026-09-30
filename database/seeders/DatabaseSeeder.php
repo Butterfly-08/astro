@@ -33,5 +33,16 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // Phase 2: Services & Astrologers
+        $this->call(ServiceSeeder::class);
+        $this->call(AstrologerSeeder::class);
+
+        // Phase 3: Bookings
+        $this->call(BookingSeeder::class);
+
+        // Phase 4: E-Commerce Product Categories & Products
+        $this->call(ProductCategorySeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }

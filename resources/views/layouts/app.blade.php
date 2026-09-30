@@ -205,13 +205,15 @@
                         <a class="nav-link {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}" href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#astrologers">Astrologers</a>
+                        <a class="nav-link {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('astrologers.index') }}">Astrologers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
+                        <a class="nav-link {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('services.index') }}">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#shop">Shop</a>
+                        <a class="nav-link {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('shop.index') }}">
+                            <i class="bi bi-bag-heart me-1 text-warning"></i>Spiritual Shop
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#horoscope">Horoscope</a>
@@ -235,6 +237,11 @@
                                 <li>
                                     <a class="dropdown-item" href="{{ route('user.dashboard') }}">
                                         <i class="bi bi-speedometer2 me-2 text-primary"></i> My Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('user.bookings.index') }}">
+                                        <i class="bi bi-calendar-event me-2 text-warning"></i> My Consultations
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -317,9 +324,9 @@
                     <h5 class="footer-heading">Quick Links</h5>
                     <ul class="list-unstyled small">
                         <li class="mb-2"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="mb-2"><a href="#astrologers">Verified Astrologers</a></li>
-                        <li class="mb-2"><a href="#services">Consultation Services</a></li>
-                        <li class="mb-2"><a href="#shop">Spiritual Shop</a></li>
+                        <li class="mb-2"><a href="{{ route('astrologers.index') }}">Verified Astrologers</a></li>
+                        <li class="mb-2"><a href="{{ route('services.index') }}">Consultation Services</a></li>
+                        <li class="mb-2"><a href="{{ route('shop.index') }}">Spiritual Shop</a></li>
                         <li class="mb-2"><a href="#horoscope">Daily Horoscopes</a></li>
                     </ul>
                 </div>

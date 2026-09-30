@@ -264,19 +264,32 @@
 
                 <div class="sidebar-header">Platform Users</div>
                 <div class="nav-item-custom">
-                    <a href="#users" class="nav-link-custom">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link-custom {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                         <i class="bi bi-people-fill"></i>
                         <span>Users</span>
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#astrologers" class="nav-link-custom">
+                    @php $pendingCount = \App\Models\Astrologer::where('status','pending')->count(); @endphp
+                    <a href="{{ route('admin.astrologers.index') }}" class="nav-link-custom {{ request()->routeIs('admin.astrologers.*') && request('status') !== 'pending' ? 'active' : '' }}">
                         <i class="bi bi-star-fill text-warning"></i>
                         <span>Astrologers</span>
+                        @if($pendingCount > 0)
+                            <span class="badge bg-warning text-dark ms-auto" style="font-size:0.65rem;">{{ $pendingCount }}</span>
+                        @endif
                     </a>
                 </div>
+                @if($pendingCount > 0)
+                <div class="nav-item-custom" style="padding-left: 12px;">
+                    <a href="{{ route('admin.astrologers.index', ['status' => 'pending']) }}" class="nav-link-custom py-1 {{ request('status') === 'pending' ? 'active' : '' }}" style="font-size: 0.82rem;">
+                        <i class="bi bi-clock-history text-warning"></i>
+                        <span>Pending Approval</span>
+                        <span class="badge bg-danger ms-auto" style="font-size:0.62rem;">{{ $pendingCount }}</span>
+                    </a>
+                </div>
+                @endif
                 <div class="nav-item-custom">
-                    <a href="#services" class="nav-link-custom">
+                    <a href="{{ route('admin.services.index') }}" class="nav-link-custom {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
                         <i class="bi bi-gem"></i>
                         <span>Services</span>
                     </a>
@@ -284,7 +297,13 @@
 
                 <div class="sidebar-header">Commerce & Bookings</div>
                 <div class="nav-item-custom">
-                    <a href="#products" class="nav-link-custom">
+                    <a href="{{ route('admin.categories.index') }}" class="nav-link-custom {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                        <i class="bi bi-tags-fill"></i>
+                        <span>Product Categories</span>
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.products.index') }}" class="nav-link-custom {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                         <i class="bi bi-box-seam-fill"></i>
                         <span>Products & Stock</span>
                     </a>
@@ -296,9 +315,13 @@
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#bookings" class="nav-link-custom">
+                    @php $pendingBookingsCount = \Illuminate\Support\Facades\Schema::hasTable('bookings') ? \App\Models\Booking::where('status', 'pending')->count() : 0; @endphp
+                    <a href="{{ route('admin.bookings.index') }}" class="nav-link-custom {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
                         <i class="bi bi-calendar2-check-fill"></i>
                         <span>Bookings</span>
+                        @if($pendingBookingsCount > 0)
+                            <span class="badge bg-warning text-dark ms-auto" style="font-size:0.65rem;">{{ $pendingBookingsCount }}</span>
+                        @endif
                     </a>
                 </div>
                 <div class="nav-item-custom">
