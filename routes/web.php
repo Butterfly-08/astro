@@ -20,6 +20,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\User\BookingController as UserBookingController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\WishlistController as UserWishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,7 +46,7 @@ Route::prefix('services')->name('services.')->group(function () {
 Route::prefix('shop')->name('shop.')->group(function () {
     Route::get('/', [ShopController::class, 'index'])->name('index');
     Route::get('/category/{slug}', [ShopController::class, 'category'])->name('category');
-    Route::get('/product/{slug}', [ShopController::class, 'product.show'])->name('product.show');
+    Route::get('/product/{slug}', [ShopController::class, 'show'])->name('product.show');
 });
 
 // Shopping Cart (publicly accessible; add requires product check only)
@@ -101,6 +102,14 @@ Route::middleware('auth:web')->group(function () {
         Route::get('/', [UserOrderController::class, 'index'])->name('index');
         Route::get('/{order}', [UserOrderController::class, 'show'])->name('show');
         Route::post('/{order}/cancel', [UserOrderController::class, 'cancel'])->name('cancel');
+    });
+
+    // Customer Wishlist Management
+    Route::prefix('dashboard/wishlist')->name('user.wishlist.')->group(function () {
+        Route::get('/', [UserWishlistController::class, 'index'])->name('index');
+        Route::post('/toggle/{productId}', [UserWishlistController::class, 'toggle'])->name('toggle');
+        Route::delete('/remove/{wishlistId}', [UserWishlistController::class, 'remove'])->name('remove');
+        Route::delete('/clear', [UserWishlistController::class, 'clear'])->name('clear');
     });
 });
 

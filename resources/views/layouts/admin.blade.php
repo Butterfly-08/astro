@@ -309,9 +309,13 @@
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#orders" class="nav-link-custom">
+                    @php $pendingOrdersCount = \Illuminate\Support\Facades\Schema::hasTable('orders') ? \App\Models\Order::where('status', 'pending')->count() : 0; @endphp
+                    <a href="{{ route('admin.orders.index') }}" class="nav-link-custom {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                         <i class="bi bi-bag-check-fill"></i>
                         <span>Orders</span>
+                        @if($pendingOrdersCount > 0)
+                            <span class="badge bg-danger ms-auto" style="font-size:0.65rem;">{{ $pendingOrdersCount }}</span>
+                        @endif
                     </a>
                 </div>
                 <div class="nav-item-custom">

@@ -80,13 +80,13 @@ class BookingController extends Controller
     {
         $request->validate([
             'status'         => 'required|in:pending,confirmed,completed,cancelled,rejected',
-            'payment_status' => 'required|in:pending,paid,failed,refunded',
+            'payment_status' => 'nullable|in:pending,paid,failed,refunded',
             'admin_notes'    => 'nullable|string|max:1000',
         ]);
 
         $updates = [
             'status'         => $request->status,
-            'payment_status' => $request->payment_status,
+            'payment_status' => $request->payment_status ?? $booking->payment_status,
             'admin_notes'    => $request->admin_notes,
         ];
 

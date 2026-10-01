@@ -102,4 +102,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class)->latest();
     }
+
+    /**
+     * User's e-commerce orders.
+     */
+    public function orders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Order::class)->latest();
+    }
+
+    /**
+     * User's wishlisted products.
+     */
+    public function wishlists(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Wishlist::class)->latest();
+    }
 }

@@ -132,15 +132,24 @@ class Product extends Model
         return $this->stock > 0 && $this->status !== 'out_of_stock';
     }
 
-    public function getStockBadgeAttribute(): string
+    public function getStockBadgeAttribute(): array
     {
         if ($this->stock <= 0 || $this->status === 'out_of_stock') {
-            return '<span class="badge bg-danger">Out of Stock</span>';
+            return [
+                'class' => 'danger',
+                'label' => 'Out of Stock',
+            ];
         }
         if ($this->stock <= 5) {
-            return '<span class="badge bg-warning text-dark">Only ' . $this->stock . ' Left</span>';
+            return [
+                'class' => 'warning text-dark',
+                'label' => 'Only ' . $this->stock . ' Left',
+            ];
         }
-        return '<span class="badge bg-success">In Stock (' . $this->stock . ')</span>';
+        return [
+            'class' => 'success',
+            'label' => 'In Stock (' . $this->stock . ')',
+        ];
     }
 
     // -------------------------------------------------------------------------

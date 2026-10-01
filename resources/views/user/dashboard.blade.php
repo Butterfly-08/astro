@@ -53,14 +53,14 @@
                         </div>
                         <span class="badge bg-light text-dark border">{{ $totalBookings }}</span>
                     </a>
-                    <a href="#orders" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
+                    <a href="{{ route('user.orders.index') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-bag-check fs-5 text-muted"></i>
                             <span>My Orders</span>
                         </div>
                         <span class="badge bg-light text-dark border">{{ $totalOrders }}</span>
                     </a>
-                    <a href="#wishlist" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
+                    <a href="{{ route('user.wishlist.index') }}" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 text-secondary">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-heart fs-5 text-muted"></i>
                             <span>Wishlist</span>

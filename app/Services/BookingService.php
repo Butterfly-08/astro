@@ -36,7 +36,7 @@ class BookingService
 
         // 2. Fetch all existing active bookings on that date
         $existingBookings = Booking::where('astrologer_id', $astrologer->id)
-            ->where('booking_date', $date->toDateString())
+            ->whereDate('booking_date', $date->toDateString())
             ->whereIn('status', ['pending', 'confirmed'])
             ->get(['start_time', 'end_time']);
 
@@ -100,7 +100,7 @@ class BookingService
 
             // 1. Double Booking Check with Exclusive Row Locking
             $hasConflict = Booking::where('astrologer_id', $astrologer->id)
-                ->where('booking_date', $bookingDate)
+                ->whereDate('booking_date', $bookingDate)
                 ->whereIn('status', ['pending', 'confirmed'])
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->where('start_time', '<', $endTime)

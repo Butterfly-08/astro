@@ -62,7 +62,7 @@ class AstrologerController extends Controller
     {
         $astrologer = Astrologer::where('slug', $slug)
             ->where('status', 'active')
-            ->with(['services', 'availability' => fn($q) => $q->where('is_active', true)->orderByRaw("FIELD(day_of_week,'monday','tuesday','wednesday','thursday','friday','saturday','sunday')")])
+            ->with(['services', 'availability' => fn($q) => $q->where('is_active', true)->orderByRaw("CASE day_of_week WHEN 'monday' THEN 1 WHEN 'tuesday' THEN 2 WHEN 'wednesday' THEN 3 WHEN 'thursday' THEN 4 WHEN 'friday' THEN 5 WHEN 'saturday' THEN 6 WHEN 'sunday' THEN 7 ELSE 8 END")])
             ->firstOrFail();
 
         // Related astrologers (same services, excluding self)
