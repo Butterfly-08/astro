@@ -100,7 +100,13 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold small">Languages</label>
-                        <input type="text" name="languages" class="form-control @error('languages') is-invalid @enderror" value="{{ old('languages') }}" placeholder="Hindi, English, Telugu (comma-separated)">
+                        <input type="text" name="languages" list="astrologer-language-options" class="form-control @error('languages') is-invalid @enderror" value="{{ old('languages') }}" placeholder="Hindi, English, Telugu (comma-separated)">
+                        <datalist id="astrologer-language-options">
+                            @foreach(['Hindi', 'English', 'Tamil', 'Telugu', 'Bengali', 'Marathi', 'Gujarati', 'Punjabi'] as $language)
+                                <option value="{{ $language }}">
+                            @endforeach
+                        </datalist>
+                        <div class="form-text">Available languages: Hindi, English, Tamil, Telugu, Bengali, Marathi, Gujarati, Punjabi.</div>
                         @error('languages')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 

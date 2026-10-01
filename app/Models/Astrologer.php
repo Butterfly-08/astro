@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -99,27 +100,27 @@ class Astrologer extends Model
     // Scopes
     // -------------------------------------------------------------------------
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }
 
-    public function scopePending($query)
+    public function scopePending(Builder $query): Builder
     {
         return $query->where('status', 'pending');
     }
 
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
-    public function scopeAvailable($query)
+    public function scopeAvailable(Builder $query): Builder
     {
         return $query->where('is_available', true);
     }
 
-    public function scopeSearch($query, string $term)
+    public function scopeSearch(Builder $query, string $term): Builder
     {
         return $query->where(function ($q) use ($term) {
             $q->where('display_name', 'like', "%{$term}%")
@@ -129,12 +130,12 @@ class Astrologer extends Model
         });
     }
 
-    public function scopeByService($query, int $serviceId)
+    public function scopeByService(Builder $query, int $serviceId): Builder
     {
         return $query->whereHas('services', fn($q) => $q->where('services.id', $serviceId));
     }
 
-    public function scopeByLanguage($query, string $language)
+    public function scopeByLanguage(Builder $query, string $language): Builder
     {
         return $query->where('languages', 'like', "%{$language}%");
     }
