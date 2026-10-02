@@ -63,7 +63,7 @@
 
 
         {{-- =========================================
-             CATEGORY
+             CATEGORY + RATING
         ========================================== --}}
         <div class="d-flex align-items-center justify-content-between mb-2">
 
@@ -177,7 +177,9 @@
             <div class="d-flex gap-2">
 
 
-                {{-- VIEW BUTTON --}}
+                {{-- =====================================
+                     VIEW BUTTON
+                ====================================== --}}
                 <a
                     href="{{ route('shop.product.show', $product->slug) }}"
                     class="btn btn-outline-primary btn-sm flex-grow-1 fw-semibold d-flex align-items-center justify-content-center gap-1"
@@ -190,11 +192,14 @@
                 </a>
 
 
-                {{-- BUY NOW BUTTON --}}
+                {{-- =====================================
+                     BUY NOW BUTTON
+                ====================================== --}}
                 @if($product->in_stock)
 
-                    <a
-                        href="{{ route('shop.product.show', $product->slug) }}"
+                    <button
+                        type="button"
+                        onclick="buyNowProduct({{ $product->id }}, this)"
                         class="btn btn-primary btn-sm flex-grow-1 fw-semibold d-flex align-items-center justify-content-center gap-1"
                         style="
                             background: var(--astro-purple, #1A0B2E);
@@ -202,11 +207,11 @@
                         "
                     >
 
-                        <i class="bi bi-cart-plus"></i>
+                        <i class="bi bi-lightning-fill"></i>
 
                         Buy Now
 
-                    </a>
+                    </button>
 
                 @else
 
@@ -215,6 +220,8 @@
                         class="btn btn-secondary btn-sm flex-grow-1 fw-semibold"
                         disabled
                     >
+
+                        <i class="bi bi-x-circle me-1"></i>
 
                         Out of Stock
 
@@ -229,3 +236,161 @@
     </div>
 
 </div>
+
+
+{{-- =========================================
+     BUY NOW JAVASCRIPT
+     Add Product → Direct Checkout
+========================================== --}}
+@once
+
+<script>
+
+function buyNowProduct(productId, button) {
+
+    /*
+     * Prevent double click
+     */
+    if (button.disabled) {
+        return;
+    }
+
+
+    /*
+     * Save original button content
+     */
+    const originalHtml = button.innerHTML;
+
+
+    /*
+     * Disable button
+     */
+    button.disabled = true;
+
+
+    /*
+     * Loading state
+     */
+    button.innerHTML = `
+        <span
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+        ></span>
+
+        <span>Processing...</span>
+    `;
+
+
+    /*
+     * Prepare request
+     */
+    const formData = new FormData();
+
+    formData.append(
+        '_token',
+        '{{ csrf_token() }}'
+    );
+
+    formData.append(
+        'quantity',
+        '1'
+    );
+
+
+    /*
+     * Add product to cart
+     */
+    fetch(
+        `/cart/add/${productId}`,
+        {
+            method: 'POST',
+
+            body: formData,
+
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        }
+    )
+
+
+    /*
+     * Check response
+     */
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Unable to process Buy Now.'
+            );
+
+        }
+
+        return response.json();
+
+    })
+
+
+    /*
+     * Success
+     */
+    .then(data => {
+
+        if (data.success) {
+
+            /*
+             * Direct Checkout
+             */
+            window.location.href =
+                "{{ route('checkout.index') }}";
+
+        } else {
+
+            throw new Error(
+                data.message ||
+                'Unable to process Buy Now.'
+            );
+
+        }
+
+    })
+
+
+    /*
+     * Error handling
+     */
+    .catch(error => {
+
+        console.error(
+            'Buy Now Error:',
+            error
+        );
+
+
+        /*
+         * Restore button
+         */
+        button.disabled = false;
+
+        button.innerHTML =
+            originalHtml;
+
+
+        /*
+         * Show message
+         */
+        alert(
+            error.message ||
+            'Unable to process Buy Now. Please try again.'
+        );
+
+    });
+
+}
+
+</script>
+
+@endonce

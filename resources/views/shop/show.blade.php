@@ -11,20 +11,17 @@
 <style>
     /* =========================================================
        ASTROVAANI PRODUCT DETAILS PAGE
-       Existing project safe - UI only
     ========================================================= */
 
     .product-page {
         background: #fafafa;
     }
 
-    /* Breadcrumb */
     .product-breadcrumb {
         background: #fff;
         border-bottom: 1px solid #eee;
     }
 
-    /* Main gallery */
     .product-gallery-sticky {
         position: sticky;
         top: 100px;
@@ -115,7 +112,7 @@
         border-radius: 8px;
     }
 
-    /* Trust strip */
+    /* Trust */
     .trust-strip {
         background: #fff;
         border: 1px solid #e8e8e8;
@@ -229,7 +226,7 @@
         color: #dc3545;
     }
 
-    /* Purchase box */
+    /* Purchase */
     .purchase-box {
         background: #fff;
         border: 1px solid #e5e5e5;
@@ -278,7 +275,28 @@
         font-weight: 800;
     }
 
-    /* Astro consultation */
+    /* Wishlist */
+    .wishlist-btn {
+        min-height: 52px;
+        border-radius: 10px;
+        font-weight: 800;
+        border: 2px solid #8e44ad;
+        color: #6c3483;
+        background: #fff;
+        transition: all .2s ease;
+    }
+
+    .wishlist-btn:hover {
+        background: #8e44ad;
+        border-color: #8e44ad;
+        color: #fff;
+    }
+
+    .wishlist-btn i {
+        font-size: 1.1rem;
+    }
+
+    /* Astro */
     .astro-box {
         background: linear-gradient(135deg, #1c0d2d, #38205b);
         border-radius: 18px;
@@ -299,7 +317,7 @@
         justify-content: center;
     }
 
-    /* Service cards */
+    /* Services */
     .service-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -321,7 +339,7 @@
         margin-right: 7px;
     }
 
-    /* Information tabs */
+    /* Information */
     .product-info-section {
         margin-top: 55px;
     }
@@ -372,7 +390,7 @@
         text-align: right;
     }
 
-    /* What's inside */
+    /* Inside */
     .inside-card {
         border: 1px solid #eee;
         border-radius: 14px;
@@ -410,6 +428,7 @@
 
     /* Mobile */
     @media (max-width: 991px) {
+
         .product-gallery-sticky {
             position: static;
         }
@@ -424,6 +443,7 @@
     }
 
     @media (max-width: 576px) {
+
         .service-grid {
             grid-template-columns: 1fr;
         }
@@ -452,40 +472,65 @@
          BREADCRUMB
     ========================================================== --}}
     <div class="product-breadcrumb py-3">
+
         <div class="container">
+
             <nav aria-label="breadcrumb">
+
                 <ol class="breadcrumb mb-0 small">
 
                     <li class="breadcrumb-item">
-                        <a href="{{ route('home') }}"
-                           class="text-decoration-none text-muted">
+
+                        <a
+                            href="{{ route('home') }}"
+                            class="text-decoration-none text-muted"
+                        >
                             Home
                         </a>
+
                     </li>
+
 
                     <li class="breadcrumb-item">
-                        <a href="{{ route('shop.index') }}"
-                           class="text-decoration-none text-muted">
+
+                        <a
+                            href="{{ route('shop.index') }}"
+                            class="text-decoration-none text-muted"
+                        >
                             Spiritual Shop
                         </a>
+
                     </li>
 
+
                     @if($product->category)
+
                         <li class="breadcrumb-item">
-                            <a href="{{ route('shop.category', $product->category->slug) }}"
-                               class="text-decoration-none text-muted">
+
+                            <a
+                                href="{{ route('shop.category', $product->category->slug) }}"
+                                class="text-decoration-none text-muted"
+                            >
                                 {{ $product->category->name }}
                             </a>
+
                         </li>
+
                     @endif
 
+
                     <li class="breadcrumb-item active text-dark fw-semibold">
+
                         {{ Str::limit($product->name, 40) }}
+
                     </li>
 
                 </ol>
+
             </nav>
+
         </div>
+
     </div>
 
 
@@ -503,23 +548,30 @@
 
                     <div class="product-main-img-box">
 
-                        {{-- Featured --}}
                         @if($product->is_featured)
+
                             <span class="product-badge badge-featured">
+
                                 <i class="bi bi-star-fill me-1"></i>
+
                                 BESTSELLER
+
                             </span>
+
                         @endif
 
-                        {{-- Sale --}}
+
                         @if($product->is_on_sale)
+
                             <span class="product-badge badge-sale">
+
                                 SAVE {{ $product->discount_percentage }}%
+
                             </span>
+
                         @endif
 
 
-                        {{-- Main Image --}}
                         @if($product->image)
 
                             <img
@@ -532,12 +584,16 @@
                         @else
 
                             <div class="text-center text-warning">
-                                <i class="bi bi-stars"
-                                   style="font-size: 6rem;"></i>
+
+                                <i
+                                    class="bi bi-stars"
+                                    style="font-size: 6rem;"
+                                ></i>
 
                                 <div class="text-muted fw-semibold mt-2">
                                     Sacred Vedic Product
                                 </div>
+
                             </div>
 
                         @endif
@@ -550,7 +606,6 @@
 
                         <div class="product-gallery-thumbs">
 
-                            {{-- Main Image Thumbnail --}}
                             @if($product->image)
 
                                 <button
@@ -561,16 +616,17 @@
                                         this
                                     )"
                                 >
+
                                     <img
                                         src="{{ asset('storage/' . $product->image) }}"
                                         alt="{{ $product->name }}"
                                     >
+
                                 </button>
 
                             @endif
 
 
-                            {{-- Gallery Images --}}
                             @if(!empty($product->gallery))
 
                                 @foreach($product->gallery as $galleryImage)
@@ -583,10 +639,12 @@
                                             this
                                         )"
                                     >
+
                                         <img
                                             src="{{ asset('storage/' . $galleryImage) }}"
                                             alt="{{ $product->name }}"
                                         >
+
                                     </button>
 
                                 @endforeach
@@ -604,31 +662,62 @@
                         <div class="row g-3">
 
                             <div class="col-6">
+
                                 <div class="trust-item">
+
                                     <i class="bi bi-patch-check-fill text-warning fs-5"></i>
-                                    <span>Authentic Product</span>
+
+                                    <span>
+                                        Authentic Product
+                                    </span>
+
                                 </div>
+
                             </div>
 
+
                             <div class="col-6">
+
                                 <div class="trust-item">
+
                                     <i class="bi bi-shield-check text-success fs-5"></i>
-                                    <span>Secure Purchase</span>
+
+                                    <span>
+                                        Secure Purchase
+                                    </span>
+
                                 </div>
+
                             </div>
 
+
                             <div class="col-6">
+
                                 <div class="trust-item">
+
                                     <i class="bi bi-box-seam text-primary fs-5"></i>
-                                    <span>Safe Packaging</span>
+
+                                    <span>
+                                        Safe Packaging
+                                    </span>
+
                                 </div>
+
                             </div>
 
+
                             <div class="col-6">
+
                                 <div class="trust-item">
+
                                     <i class="bi bi-arrow-repeat text-info fs-5"></i>
-                                    <span>Easy Replacement</span>
+
+                                    <span>
+                                        Easy Replacement
+                                    </span>
+
                                 </div>
+
                             </div>
 
                         </div>
@@ -652,17 +741,24 @@
                             href="{{ route('shop.category', $product->category->slug) }}"
                             class="product-category-pill"
                         >
+
                             <i class="bi bi-tag-fill"></i>
+
                             {{ $product->category->name }}
+
                         </a>
 
                     @endif
 
+
                     <span class="small text-muted">
+
                         SKU:
+
                         <strong class="text-dark">
                             {{ $product->sku }}
                         </strong>
+
                     </span>
 
                 </div>
@@ -670,7 +766,9 @@
 
                 {{-- Product Name --}}
                 <h1 class="product-title">
+
                     {{ $product->name }}
+
                 </h1>
 
 
@@ -699,35 +797,48 @@
 
                     </div>
 
+
                     <strong>
                         {{ number_format($product->rating_avg, 1) }}
                     </strong>
 
+
                     <span class="review-count">
+
                         {{ $product->total_reviews }} Reviews
+
                     </span>
 
 
-                    {{-- Stock status --}}
+                    {{-- Stock --}}
                     @if($product->stock <= 0 || $product->status === 'out_of_stock')
 
                         <span class="stock-status stock-out">
+
                             <i class="bi bi-x-circle-fill"></i>
+
                             Out of Stock
+
                         </span>
 
                     @elseif($product->stock <= 5)
 
                         <span class="stock-status stock-low">
+
                             <i class="bi bi-exclamation-circle-fill"></i>
+
                             Only {{ $product->stock }} left
+
                         </span>
 
                     @else
 
                         <span class="stock-status stock-in">
+
                             <i class="bi bi-check-circle-fill"></i>
+
                             In Stock
+
                         </span>
 
                     @endif
@@ -741,18 +852,25 @@
                     <div class="d-flex align-items-center flex-wrap gap-3">
 
                         <span class="current-price">
+
                             ₹{{ number_format($product->effective_price, 2) }}
+
                         </span>
 
 
                         @if($product->is_on_sale)
 
                             <span class="old-price">
+
                                 ₹{{ number_format($product->price, 2) }}
+
                             </span>
 
+
                             <span class="discount-badge">
+
                                 {{ $product->discount_percentage }}% OFF
+
                             </span>
 
                         @endif
@@ -763,19 +881,25 @@
                     @if($product->is_on_sale)
 
                         <div class="small text-success fw-semibold mt-2">
+
                             You save
+
                             ₹{{ number_format(
                                 $product->price - $product->effective_price,
                                 2
                             ) }}
+
                         </div>
 
                     @endif
 
 
                     <div class="small text-muted mt-2">
+
                         <i class="bi bi-info-circle me-1"></i>
+
                         Inclusive of applicable taxes.
+
                     </div>
 
                 </div>
@@ -786,8 +910,10 @@
 
                     <div class="mb-4">
 
-                        <p class="text-secondary mb-0"
-                           style="line-height:1.8;">
+                        <p
+                            class="text-secondary mb-0"
+                            style="line-height:1.8;"
+                        >
 
                             {{ $product->short_description }}
 
@@ -807,9 +933,11 @@
                         <div class="d-flex align-items-center flex-wrap gap-3 mb-4">
 
                             <div>
+
                                 <div class="small fw-bold text-dark mb-2">
                                     Quantity
                                 </div>
+
 
                                 <div class="quantity-control">
 
@@ -843,13 +971,15 @@
 
 
                             <div class="small text-muted mt-4">
+
                                 {{ $product->stock }} units available
+
                             </div>
 
                         </div>
 
 
-                        {{-- Buttons --}}
+                        {{-- ================= BUY + CART ================= --}}
                         <div class="row g-3">
 
                             <div class="col-md-6">
@@ -859,8 +989,11 @@
                                     class="btn buy-btn w-100"
                                     onclick="handleBuyNow()"
                                 >
+
                                     <i class="bi bi-lightning-charge-fill me-2"></i>
+
                                     Buy Now
+
                                 </button>
 
                             </div>
@@ -873,13 +1006,64 @@
                                     class="btn btn-dark cart-btn w-100"
                                     onclick="handleAddToCart()"
                                 >
+
                                     <i class="bi bi-cart-plus me-2"></i>
+
                                     Add to Cart
+
                                 </button>
 
                             </div>
 
                         </div>
+
+
+                        {{-- ================= WISHLIST ================= --}}
+                        @if(Route::has('user.wishlist.toggle'))
+
+                            <div class="mt-3">
+
+                                @auth('web')
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('user.wishlist.toggle', $product->id) }}"
+                                        class="w-100"
+                                    >
+
+                                        @csrf
+
+                                        <button
+                                            type="submit"
+                                            class="btn wishlist-btn w-100"
+                                        >
+
+                                            <i class="bi bi-heart me-2"></i>
+
+                                            Add to Wishlist
+
+                                        </button>
+
+                                    </form>
+
+                                @else
+
+                                    <a
+                                        href="{{ route('login') }}?redirect={{ urlencode(url()->current()) }}"
+                                        class="btn wishlist-btn w-100"
+                                    >
+
+                                        <i class="bi bi-heart me-2"></i>
+
+                                        Login to Add Wishlist
+
+                                    </a>
+
+                                @endauth
+
+                            </div>
+
+                        @endif
 
 
                     @else
@@ -888,7 +1072,9 @@
 
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
 
-                            <strong>Currently Out of Stock.</strong>
+                            <strong>
+                                Currently Out of Stock.
+                            </strong>
 
                             <div class="small mt-1">
                                 Please check back later for availability.
@@ -907,21 +1093,28 @@
                     <div class="d-flex gap-3">
 
                         <div class="astro-icon">
+
                             <i class="bi bi-stars fs-5"></i>
+
                         </div>
 
 
                         <div>
 
                             <h5 class="fw-bold mb-2 text-warning">
+
                                 Recommended according to your Astro result
+
                             </h5>
 
+
                             <p class="small mb-3 text-white-50">
+
                                 Gemstones, Rudraksha and certain spiritual
                                 remedies may vary based on individual birth
                                 charts. Consider consulting an astrologer
                                 before choosing a personal remedy.
+
                             </p>
 
 
@@ -931,8 +1124,11 @@
                                     href="{{ route('astrologers.index') }}"
                                     class="btn btn-outline-warning btn-sm fw-bold"
                                 >
+
                                     <i class="bi bi-person-check me-1"></i>
+
                                     Consult an Astrologer
+
                                 </a>
 
                             @endif
@@ -948,23 +1144,38 @@
                 <div class="service-grid">
 
                     <div class="service-card">
+
                         <i class="bi bi-truck text-primary"></i>
+
                         Free shipping on eligible orders
+
                     </div>
 
+
                     <div class="service-card">
+
                         <i class="bi bi-arrow-repeat text-success"></i>
+
                         7-Day return / replacement
+
                     </div>
 
+
                     <div class="service-card">
+
                         <i class="bi bi-patch-check text-warning"></i>
+
                         Authenticity assurance
+
                     </div>
 
+
                     <div class="service-card">
+
                         <i class="bi bi-shield-lock text-info"></i>
+
                         Secure payment
+
                     </div>
 
                 </div>
@@ -986,67 +1197,92 @@
             >
 
                 <li class="nav-item">
+
                     <button
                         class="nav-link active"
                         data-bs-toggle="tab"
                         data-bs-target="#description"
                         type="button"
                     >
+
                         <i class="bi bi-file-text me-1"></i>
+
                         Description
+
                     </button>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <button
                         class="nav-link"
                         data-bs-toggle="tab"
                         data-bs-target="#spiritual"
                         type="button"
                     >
+
                         <i class="bi bi-stars me-1"></i>
+
                         Spiritual Significance
+
                     </button>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <button
                         class="nav-link"
                         data-bs-toggle="tab"
                         data-bs-target="#inside"
                         type="button"
                     >
+
                         <i class="bi bi-box-seam me-1"></i>
+
                         What's Inside
+
                     </button>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <button
                         class="nav-link"
                         data-bs-toggle="tab"
                         data-bs-target="#specifications"
                         type="button"
                     >
+
                         <i class="bi bi-card-checklist me-1"></i>
+
                         Specifications
+
                     </button>
+
                 </li>
 
 
                 <li class="nav-item">
+
                     <button
                         class="nav-link"
                         data-bs-toggle="tab"
                         data-bs-target="#reviews"
                         type="button"
                     >
+
                         <i class="bi bi-chat-heart me-1"></i>
+
                         Reviews
+
                     </button>
+
                 </li>
 
             </ul>
@@ -1054,8 +1290,7 @@
 
             <div class="tab-content pt-4">
 
-
-                {{-- ================= DESCRIPTION ================= --}}
+                {{-- DESCRIPTION --}}
                 <div
                     class="tab-pane fade show active"
                     id="description"
@@ -1064,14 +1299,19 @@
                     <div class="info-card">
 
                         <h4 class="fw-bold mb-3">
+
                             About {{ $product->name }}
+
                         </h4>
+
 
                         <div
                             class="text-secondary"
                             style="line-height:1.9;"
                         >
+
                             {!! nl2br(e($product->description ?? '')) !!}
+
                         </div>
 
                     </div>
@@ -1079,7 +1319,7 @@
                 </div>
 
 
-                {{-- ================= SPIRITUAL ================= --}}
+                {{-- SPIRITUAL --}}
                 <div
                     class="tab-pane fade"
                     id="spiritual"
@@ -1088,16 +1328,22 @@
                     <div class="info-card">
 
                         <h4 class="fw-bold mb-3">
+
                             Vedic & Spiritual Significance
+
                         </h4>
 
-                        <p class="text-secondary"
-                           style="line-height:1.9;">
+
+                        <p
+                            class="text-secondary"
+                            style="line-height:1.9;"
+                        >
 
                             This section can contain the traditional
                             spiritual significance, pooja usage and
                             customary practices associated with this
                             product.
+
                         </p>
 
 
@@ -1108,17 +1354,23 @@
                                 <div class="inside-card">
 
                                     <div class="inside-icon">
+
                                         <i class="bi bi-brightness-high"></i>
+
                                     </div>
+
 
                                     <h6 class="fw-bold">
                                         Traditional Usage
                                     </h6>
 
+
                                     <p class="small text-muted mb-0">
+
                                         Follow the customary pooja or
                                         spiritual usage instructions
                                         appropriate to the product.
+
                                     </p>
 
                                 </div>
@@ -1131,17 +1383,23 @@
                                 <div class="inside-card">
 
                                     <div class="inside-icon">
+
                                         <i class="bi bi-shield-check"></i>
+
                                     </div>
+
 
                                     <h6 class="fw-bold">
                                         Authenticity
                                     </h6>
 
+
                                     <p class="small text-muted mb-0">
+
                                         Product authenticity and
                                         certification information can be
                                         displayed here when available.
+
                                     </p>
 
                                 </div>
@@ -1155,7 +1413,7 @@
                 </div>
 
 
-                {{-- ================= WHAT'S INSIDE ================= --}}
+                {{-- WHAT'S INSIDE --}}
                 <div
                     class="tab-pane fade"
                     id="inside"
@@ -1167,9 +1425,12 @@
                             What's Inside
                         </h4>
 
+
                         <p class="text-muted small mb-4">
+
                             For Homam Kits and Combo Products, the complete
                             contents can be displayed here.
+
                         </p>
 
 
@@ -1180,15 +1441,21 @@
                                 <div class="inside-card">
 
                                     <div class="inside-icon">
+
                                         <i class="bi bi-box"></i>
+
                                     </div>
+
 
                                     <h6 class="fw-bold">
                                         Main Product
                                     </h6>
 
+
                                     <p class="small text-muted mb-0">
+
                                         {{ $product->name }}
+
                                     </p>
 
                                 </div>
@@ -1201,16 +1468,22 @@
                                 <div class="inside-card">
 
                                     <div class="inside-icon">
+
                                         <i class="bi bi-stars"></i>
+
                                     </div>
+
 
                                     <h6 class="fw-bold">
                                         Spiritual Items
                                     </h6>
 
+
                                     <p class="small text-muted mb-0">
+
                                         Kit-specific pooja materials can
                                         be listed here.
+
                                     </p>
 
                                 </div>
@@ -1223,16 +1496,22 @@
                                 <div class="inside-card">
 
                                     <div class="inside-icon">
+
                                         <i class="bi bi-file-earmark-check"></i>
+
                                     </div>
+
 
                                     <h6 class="fw-bold">
                                         Information
                                     </h6>
 
+
                                     <p class="small text-muted mb-0">
+
                                         Usage and product information can
                                         be included with the kit.
+
                                     </p>
 
                                 </div>
@@ -1246,7 +1525,7 @@
                 </div>
 
 
-                {{-- ================= SPECIFICATIONS ================= --}}
+                {{-- SPECIFICATIONS --}}
                 <div
                     class="tab-pane fade"
                     id="specifications"
@@ -1255,7 +1534,9 @@
                     <div class="info-card">
 
                         <h4 class="fw-bold mb-4">
+
                             Product Specifications
+
                         </h4>
 
 
@@ -1337,7 +1618,9 @@
                             </span>
 
                             <span class="spec-value">
+
                                 {{ number_format($product->rating_avg, 1) }} / 5
+
                             </span>
 
                         </div>
@@ -1347,7 +1630,7 @@
                 </div>
 
 
-                {{-- ================= REVIEWS ================= --}}
+                {{-- REVIEWS --}}
                 <div
                     class="tab-pane fade"
                     id="reviews"
@@ -1360,27 +1643,37 @@
                             <div class="review-summary text-center">
 
                                 <div class="display-4 fw-bold">
+
                                     {{ number_format($product->rating_avg, 1) }}
+
                                 </div>
+
 
                                 <div class="stars fs-4 mb-2">
 
                                     @for($i = 1; $i <= 5; $i++)
 
                                         @if($i <= floor($product->rating_avg))
+
                                             <i class="bi bi-star-fill"></i>
+
                                         @else
+
                                             <i class="bi bi-star"></i>
+
                                         @endif
 
                                     @endfor
 
                                 </div>
 
+
                                 <div class="text-muted">
+
                                     Based on
                                     {{ $product->total_reviews }}
                                     reviews
+
                                 </div>
 
                             </div>
@@ -1393,15 +1686,20 @@
                             <div class="info-card">
 
                                 <h5 class="fw-bold mb-3">
+
                                     Customer Reviews
+
                                 </h5>
+
 
                                 @if($product->total_reviews > 0)
 
                                     <p class="text-muted mb-0">
+
                                         Customer review details can be
                                         displayed here when the review
                                         records are connected.
+
                                     </p>
 
                                 @else
@@ -1413,13 +1711,19 @@
                                             style="font-size:3rem;"
                                         ></i>
 
+
                                         <h6 class="fw-bold mt-3">
+
                                             No reviews yet
+
                                         </h6>
 
+
                                         <p class="text-muted small mb-0">
+
                                             Be the first devotee to review
                                             this product.
+
                                         </p>
 
                                     </div>
@@ -1451,11 +1755,16 @@
                     <div>
 
                         <h3 class="fw-bold mb-1">
+
                             Related Sacred Products
+
                         </h3>
 
+
                         <p class="text-muted small mb-0">
+
                             Explore other products from this category.
+
                         </p>
 
                     </div>
@@ -1465,8 +1774,11 @@
                         href="{{ route('shop.index') }}"
                         class="btn btn-outline-dark btn-sm"
                     >
+
                         View All
+
                         <i class="bi bi-arrow-right ms-1"></i>
+
                     </a>
 
                 </div>
@@ -1550,8 +1862,10 @@
 
         if (!input) return;
 
+
         const max =
             parseInt(input.getAttribute('max')) || 99;
+
 
         let value =
             parseInt(input.value) || 1;
@@ -1573,6 +1887,7 @@
 
         if (!input) return;
 
+
         let value =
             parseInt(input.value) || 1;
 
@@ -1587,81 +1902,136 @@
 
 
     /* =====================================================
-       CART / BUY NOW ACTION
-       Existing backend cart system
+       ADD TO CART
     ====================================================== */
 
     function handleAddToCart() {
 
-        const input = document.getElementById('quantityInput');
+        const input =
+            document.getElementById('quantityInput');
+
 
         const quantity =
             input ? parseInt(input.value) || 1 : 1;
 
-        const form = document.createElement('form');
+
+        const form =
+            document.createElement('form');
+
 
         form.method = 'POST';
-        form.action = "{{ route('cart.add', $product->id) }}";
 
-        const csrf = document.createElement('input');
+        form.action =
+            "{{ route('cart.add', $product->id) }}";
+
+
+        const csrf =
+            document.createElement('input');
+
+
         csrf.type = 'hidden';
-        csrf.name = '_token';
-        csrf.value = "{{ csrf_token() }}";
 
-        const qty = document.createElement('input');
+        csrf.name = '_token';
+
+        csrf.value =
+            "{{ csrf_token() }}";
+
+
+        const qty =
+            document.createElement('input');
+
+
         qty.type = 'hidden';
+
         qty.name = 'quantity';
+
         qty.value = quantity;
 
+
         form.appendChild(csrf);
+
         form.appendChild(qty);
+
 
         document.body.appendChild(form);
 
         form.submit();
+
     }
 
 
+    /* =====================================================
+       BUY NOW
+    ====================================================== */
+
     function handleBuyNow() {
 
-        const input = document.getElementById('quantityInput');
+        const input =
+            document.getElementById('quantityInput');
+
 
         const quantity =
             input ? parseInt(input.value) || 1 : 1;
 
-        const formData = new FormData();
 
-        formData.append('_token', "{{ csrf_token() }}");
-        formData.append('quantity', quantity);
+        const formData =
+            new FormData();
 
-        fetch("{{ route('cart.add', $product->id) }}", {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
+
+        formData.append(
+            '_token',
+            "{{ csrf_token() }}"
+        );
+
+
+        formData.append(
+            'quantity',
+            quantity
+        );
+
+
+        fetch(
+            "{{ route('cart.add', $product->id) }}",
+            {
+                method: 'POST',
+
+                body: formData,
+
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
             }
-        })
+        )
         .then(response => {
 
             if (!response.ok) {
-                throw new Error('Unable to add product to cart.');
+
+                throw new Error(
+                    'Unable to add product to cart.'
+                );
+
             }
 
             return response.json();
+
         })
         .then(data => {
 
-            window.location.href = "{{ url('/cart') }}";
+            window.location.href =
+                "{{ url('/cart') }}";
 
         })
         .catch(error => {
 
             console.error(error);
 
-            alert('Unable to add this product to cart. Please try again.');
+            alert(
+                'Unable to add this product to cart. Please try again.'
+            );
 
         });
+
     }
 
 </script>

@@ -9,25 +9,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Order extends Model
 {
     protected $fillable = [
-        'order_number', 'user_id',
-        'coupon_code', 'coupon_discount',
-        'subtotal', 'shipping_charge', 'tax_amount', 'total_amount',
-        'status', 'payment_method', 'payment_status', 'payment_id',
-        'shipping_name', 'shipping_phone',
-        'shipping_address_line1', 'shipping_address_line2',
-        'shipping_city', 'shipping_state', 'shipping_pincode', 'shipping_country',
-        'tracking_number', 'carrier_name', 'estimated_delivery', 'delivered_at',
-        'admin_notes',
+        'user_id',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'shipping_address',
+        'status',
+        'subtotal',
+        'total',
     ];
 
     protected $casts = [
-        'subtotal'         => 'float',
-        'shipping_charge'  => 'float',
-        'tax_amount'       => 'float',
-        'total_amount'     => 'float',
-        'coupon_discount'  => 'float',
-        'estimated_delivery' => 'date',
-        'delivered_at'     => 'datetime',
+        'subtotal' => 'float',
+        'total'    => 'float',
     ];
 
     // -------------------------------------------------------------------------
@@ -45,7 +39,7 @@ class Order extends Model
     }
 
     // -------------------------------------------------------------------------
-    // Status Helpers
+    // Status constants
     // -------------------------------------------------------------------------
 
     public const STATUS_PENDING    = 'pending';
@@ -69,60 +63,73 @@ class Order extends Model
         ];
     }
 
+    // -------------------------------------------------------------------------
+    // Accessors
+    // -------------------------------------------------------------------------
+
     public function getStatusBadgeAttribute(): array
     {
         return match ($this->status) {
-            'pending'    => ['label' => 'Pending',    'class' => 'warning text-dark'],
-            'confirmed'  => ['label' => 'Confirmed',  'class' => 'info text-dark'],
-            'processing' => ['label' => 'Processing', 'class' => 'primary'],
-            'shipped'    => ['label' => 'Shipped',    'class' => 'primary'],
-            'delivered'  => ['label' => 'Delivered',  'class' => 'success'],
-            'cancelled'  => ['label' => 'Cancelled',  'class' => 'danger'],
-            'refunded'   => ['label' => 'Refunded',   'class' => 'secondary'],
-            default      => ['label' => 'Unknown',    'class' => 'secondary'],
+            'pending' => [
+                'label' => 'Pending',
+                'class' => 'warning text-dark',
+            ],
+
+            'confirmed' => [
+                'label' => 'Confirmed',
+                'class' => 'info text-dark',
+            ],
+
+            'processing' => [
+                'label' => 'Processing',
+                'class' => 'primary',
+            ],
+
+            'shipped' => [
+                'label' => 'Shipped',
+                'class' => 'primary',
+            ],
+
+            'delivered' => [
+                'label' => 'Delivered',
+                'class' => 'success',
+            ],
+
+            'cancelled' => [
+                'label' => 'Cancelled',
+                'class' => 'danger',
+            ],
+
+            'refunded' => [
+                'label' => 'Refunded',
+                'class' => 'secondary',
+            ],
+
+            default => [
+                'label' => ucfirst($this->status ?? 'Unknown'),
+                'class' => 'secondary',
+            ],
         };
     }
 
-    public function getPaymentStatusBadgeAttribute(): array
-    {
-        return match ($this->payment_status) {
-            'paid'     => ['label' => 'Paid',     'class' => 'success'],
-            'unpaid'   => ['label' => 'Unpaid',   'class' => 'warning text-dark'],
-            'failed'   => ['label' => 'Failed',   'class' => 'danger'],
-            'refunded' => ['label' => 'Refunded', 'class' => 'secondary'],
-            default    => ['label' => 'Unknown',  'class' => 'secondary'],
-        };
-    }
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
 
     public function isCancellable(): bool
     {
-        return in_array($this->status, ['pending', 'confirmed']);
+        return in_array(
+            $this->status,
+            [
+                self::STATUS_PENDING,
+                self::STATUS_CONFIRMED,
+            ],
+            true
+        );
     }
-
-    // -------------------------------------------------------------------------
-    // Scopes
-    // -------------------------------------------------------------------------
 
     public function scopeForUser($query, int $userId)
     {
         return $query->where('user_id', $userId);
     }
-
-    // -------------------------------------------------------------------------
-    // Boot: auto-generate order number
-    // -------------------------------------------------------------------------
-
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::creating(function (Order $order) {
-            if (empty($order->order_number)) {
-                do {
-                    $number = 'AV-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
-                } while (static::where('order_number', $number)->exists());
-                $order->order_number = $number;
-            }
-        });
-    }
-}
+}s
