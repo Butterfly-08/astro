@@ -11,22 +11,17 @@ class ProductCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'product_categories';
+    protected $table = 'categories';
 
     protected $fillable = [
         'name',
         'slug',
         'description',
-        'icon',
-        'image',
-        'status',
-        'sort_order',
-        'is_featured',
+        'is_active',
     ];
 
     protected $casts = [
-        'is_featured' => 'boolean',
-        'sort_order'  => 'integer',
+        'is_active' => 'boolean',
     ];
 
     // -------------------------------------------------------------------------
@@ -40,7 +35,8 @@ class ProductCategory extends Model
 
     public function activeProducts(): HasMany
     {
-        return $this->hasMany(Product::class, 'category_id')->where('status', 'active');
+        return $this->hasMany(Product::class, 'category_id')
+            ->where('is_active', true);
     }
 
     // -------------------------------------------------------------------------
@@ -49,17 +45,18 @@ class ProductCategory extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('is_active', true);
     }
 
     public function scopeFeatured($query)
     {
-        return $query->where('is_featured', true);
+        // Existing categories table has no featured column.
+        return $query;
     }
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('name');
+        return $query->orderBy('name');
     }
 
     // -------------------------------------------------------------------------

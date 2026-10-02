@@ -91,7 +91,8 @@
             transition: all 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: var(--astro-purple) !important;
         }
 
@@ -140,6 +141,40 @@
             color: #FFFFFF;
         }
 
+        /* Cart Button */
+        .btn-cart {
+            position: relative;
+            border: 1.5px solid var(--astro-purple);
+            color: var(--astro-purple);
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 7px 15px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn-cart:hover {
+            background-color: var(--astro-purple);
+            color: #FFFFFF;
+        }
+
+        .cart-badge {
+            font-size: 0.68rem;
+            min-width: 19px;
+            height: 19px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            background-color: var(--astro-gold);
+            color: var(--astro-purple-dark);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Footer */
         .astro-footer {
             background-color: var(--astro-purple-dark);
@@ -178,28 +213,51 @@
             background-color: var(--astro-gold);
         }
     </style>
+
     @stack('styles')
 </head>
+
 <body>
+
     <!-- Top Bar -->
     <div class="astro-topbar d-none d-md-block">
         <div class="container d-flex justify-content-between align-items-center">
+
             <div>
-                <span class="me-3"><i class="bi bi-stars text-warning me-1"></i> 100% Genuine Consultation & Certified Remedies</span>
-                <span><i class="bi bi-shield-check text-success me-1"></i> Verified Astrologers</span>
+                <span class="me-3">
+                    <i class="bi bi-stars text-warning me-1"></i>
+                    100% Genuine Consultation & Certified Remedies
+                </span>
+
+                <span>
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    Verified Astrologers
+                </span>
             </div>
+
             <div>
-                <a href="{{ route('admin.login') }}" class="text-white-50 text-decoration-none me-3" style="font-size: 0.8rem;">
-                    <i class="bi bi-shield-lock me-1"></i> Admin Portal
+                <a href="{{ route('admin.login') }}"
+                   class="text-white-50 text-decoration-none me-3"
+                   style="font-size: 0.8rem;">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    Admin Portal
                 </a>
-                <span class="text-white-50">Support: support@astrovani.test</span>
+
+                <span class="text-white-50">
+                    Support: support@astrovani.test
+                </span>
             </div>
+
         </div>
     </div>
 
+
     <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg astro-navbar sticky-top">
+
         <div class="container">
+
+            <!-- Logo -->
             <a class="astro-logo" href="{{ route('home') }}">
                 <div>
                     <i class="bi bi-sun-fill logo-star"></i>
@@ -208,34 +266,73 @@
                 </div>
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarContent"
+                    aria-controls="navbarContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+
                 <span class="navbar-toggler-icon"></span>
+
             </button>
 
+
             <div class="collapse navbar-collapse" id="navbarContent">
+
+                <!-- Menu -->
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}" href="{{ route('home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('astrologers.index') }}">Astrologers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('services.index') }}">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('shop.index') }}">
-                            <i class="bi bi-bag-heart me-1 text-warning"></i>Spiritual Shop
+                        <a class="nav-link {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('home') }}">
+                            Home
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#horoscope">Horoscope</a>
+                        <a class="nav-link {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('astrologers.index') }}">
+                            Astrologers
+                        </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#blogs">Blogs</a>
+                        <a class="nav-link {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('services.index') }}">
+                            Services
+                        </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('shop.index') }}">
+
+                            <i class="bi bi-bag-heart me-1 text-warning"></i>
+                            Spiritual Shop
+
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#horoscope">
+                            Horoscope
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#blogs">
+                            Blogs
+                        </a>
+                    </li>
+
                 </ul>
 
+
+                <!-- Right Side -->
                 <div class="d-flex align-items-center gap-2">
                     <label class="visually-hidden" for="website-language">Website language</label>
                     <select id="website-language" class="form-select website-language-select" aria-label="Website language" onchange="changeWebsiteLanguage(this.value)">
@@ -249,143 +346,369 @@
                         <option value="pa">Punjabi</option>
                     </select>
                     <div id="google_translate_element" aria-hidden="true"></div>
+
+                    <!-- CART BUTTON -->
+                    <a href="{{ route('cart.index') }}" class="btn-cart">
+
+                        <i class="bi bi-cart3"></i>
+
+                        <span>Cart</span>
+
+                        <span class="cart-badge">
+                            {{ app(\App\Services\CartService::class)->count() }}
+                        </span>
+
+                    </a>
+
+
                     @auth('web')
+
                         <div class="dropdown">
-                            <button class="btn btn-astro-outline dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+
+                            <button class="btn btn-astro-outline dropdown-toggle d-flex align-items-center gap-2"
+                                    type="button"
+                                    id="userMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+
                                 <i class="bi bi-person-circle"></i>
-                                <span>{{ Auth::guard('web')->user()->first_name }}</span>
+
+                                <span>
+                                    {{ Auth::guard('web')->user()->first_name }}
+                                </span>
+
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenuButton">
+
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm"
+                                aria-labelledby="userMenuButton">
+
                                 <li>
-                                    <h6 class="dropdown-header">Logged in as customer</h6>
+                                    <h6 class="dropdown-header">
+                                        Logged in as customer
+                                    </h6>
                                 </li>
+
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('user.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2 text-primary"></i> My Dashboard
+                                    <a class="dropdown-item"
+                                       href="{{ route('user.dashboard') }}">
+
+                                        <i class="bi bi-speedometer2 me-2 text-primary"></i>
+                                        My Dashboard
+
                                     </a>
                                 </li>
+
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('user.bookings.index') }}">
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i> My Consultations
+                                    <a class="dropdown-item"
+                                       href="{{ route('user.bookings.index') }}">
+
+                                        <i class="bi bi-calendar-event me-2 text-warning"></i>
+                                        My Consultations
+
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+
                                 <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+
+                                <li>
+
                                     <form action="{{ route('logout') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+
+                                        <button type="submit"
+                                                class="dropdown-item text-danger">
+
+                                            <i class="bi bi-box-arrow-right me-2"></i>
+                                            Logout
+
                                         </button>
+
                                     </form>
+
                                 </li>
+
                             </ul>
+
                         </div>
+
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-astro-outline me-1">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+
+                        <a href="{{ route('login') }}"
+                           class="btn btn-astro-outline me-1">
+
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            Login
+
                         </a>
-                        <a href="{{ route('register') }}" class="btn btn-astro-gold">
-                            <i class="bi bi-person-plus me-1"></i> Register
+
+                        <a href="{{ route('register') }}"
+                           class="btn btn-astro-gold">
+
+                            <i class="bi bi-person-plus me-1"></i>
+                            Register
+
                         </a>
+
                     @endauth
+
                 </div>
+
             </div>
+
         </div>
+
     </nav>
 
-    <!-- Alerts Container -->
+
+    <!-- Alerts -->
     <div class="container mt-3">
+
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center"
+                 role="alert">
+
                 <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+
                 <div>{{ session('success') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
             </div>
+
         @endif
+
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center"
+                 role="alert">
+
                 <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+
                 <div>{{ session('error') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
             </div>
+
         @endif
 
+
         @if(session('info'))
-            <div class="alert alert-info alert-dismissible fade show d-flex align-items-center" role="alert">
+
+            <div class="alert alert-info alert-dismissible fade show d-flex align-items-center"
+                 role="alert">
+
                 <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+
                 <div>{{ session('info') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+
             </div>
+
         @endif
+
     </div>
+
 
     <!-- Main Content -->
     <main class="flex-grow-1">
         @yield('content')
     </main>
 
+
     <!-- Footer -->
     <footer class="astro-footer">
+
         <div class="container">
+
             <div class="row g-4">
+
                 <div class="col-lg-4 col-md-6">
+
                     <div class="astro-logo mb-3 text-white">
+
                         <i class="bi bi-sun-fill logo-star"></i>
-                        <span class="text-white">AstroVani</span>
+
+                        <span class="text-white">
+                            AstroVani
+                        </span>
+
                     </div>
+
                     <p class="text-white-50 small mb-3">
                         AstroVani is an authentic digital sanctuary bringing ancient Vedic wisdom into modern life. Connect with experienced, verified astrologers and discover genuine, sacred remedies for personal growth and harmony.
                     </p>
+
                     <div class="d-flex gap-3 text-white-50">
-                        <a href="#"><i class="bi bi-facebook fs-5"></i></a>
-                        <a href="#"><i class="bi bi-instagram fs-5"></i></a>
-                        <a href="#"><i class="bi bi-youtube fs-5"></i></a>
-                        <a href="#"><i class="bi bi-whatsapp fs-5"></i></a>
+
+                        <a href="#">
+                            <i class="bi bi-facebook fs-5"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="bi bi-instagram fs-5"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="bi bi-youtube fs-5"></i>
+                        </a>
+
+                        <a href="#">
+                            <i class="bi bi-whatsapp fs-5"></i>
+                        </a>
+
                     </div>
+
                 </div>
 
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="footer-heading">Quick Links</h5>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="mb-2"><a href="{{ route('astrologers.index') }}">Verified Astrologers</a></li>
-                        <li class="mb-2"><a href="{{ route('services.index') }}">Consultation Services</a></li>
-                        <li class="mb-2"><a href="{{ route('shop.index') }}">Spiritual Shop</a></li>
-                        <li class="mb-2"><a href="#horoscope">Daily Horoscopes</a></li>
-                    </ul>
-                </div>
 
                 <div class="col-lg-2 col-md-6">
-                    <h5 class="footer-heading">Customer Care</h5>
+
+                    <h5 class="footer-heading">
+                        Quick Links
+                    </h5>
+
                     <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="{{ route('user.dashboard') }}">My Account</a></li>
-                        <li class="mb-2"><a href="{{ route('login') }}">Customer Login</a></li>
-                        <li class="mb-2"><a href="{{ route('register') }}">Create Account</a></li>
-                        <li class="mb-2"><a href="{{ route('admin.login') }}">Admin Login</a></li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('home') }}">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('astrologers.index') }}">
+                                Verified Astrologers
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('services.index') }}">
+                                Consultation Services
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('shop.index') }}">
+                                Spiritual Shop
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="#horoscope">
+                                Daily Horoscopes
+                            </a>
+                        </li>
+
                     </ul>
+
                 </div>
+
+
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-heading">
+                        Customer Care
+                    </h5>
+
+                    <ul class="list-unstyled small">
+
+                        <li class="mb-2">
+                            <a href="{{ route('user.dashboard') }}">
+                                My Account
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('login') }}">
+                                Customer Login
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('register') }}">
+                                Create Account
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('admin.login') }}">
+                                Admin Login
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
 
                 <div class="col-lg-4 col-md-6">
-                    <h5 class="footer-heading">Astrology Disclaimer</h5>
-                    <p class="text-white-50" style="font-size: 0.78rem; line-height: 1.5;">
+
+                    <h5 class="footer-heading">
+                        Astrology Disclaimer
+                    </h5>
+
+                    <p class="text-white-50"
+                       style="font-size: 0.78rem; line-height: 1.5;">
+
                         Astrology readings and spiritual insights provided on AstroVani are based on Vedic and symbolic traditions. They are meant for guidance and self-discovery and do not constitute professional medical, legal, or financial advice. We do not make supernatural guarantees.
+
                     </p>
+
                     <div class="small text-warning">
-                        <i class="bi bi-patch-check-fill me-1"></i> Dedicated 24/7 Spiritual Platform Support
+
+                        <i class="bi bi-patch-check-fill me-1"></i>
+
+                        Dedicated 24/7 Spiritual Platform Support
+
                     </div>
+
                 </div>
+
             </div>
 
+
             <hr class="border-secondary mt-4 mb-3">
+
+
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-white-50">
-                <div>&copy; {{ date('Y') }} AstroVani Platform. All rights reserved.</div>
-                <div class="mt-2 mt-md-0">
-                    <span class="me-3">Crafted with Laravel 13 & Bootstrap 5</span>
+
+                <div>
+                    &copy; {{ date('Y') }} AstroVani Platform. All rights reserved.
                 </div>
+
+                <div class="mt-2 mt-md-0">
+
+                    <span class="me-3">
+                        Crafted with Laravel 13 & Bootstrap 5
+                    </span>
+
+                </div>
+
             </div>
+
         </div>
+
     </footer>
+
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -418,6 +741,8 @@
         }
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     @stack('scripts')
+
 </body>
 </html>
