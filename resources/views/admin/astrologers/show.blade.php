@@ -66,6 +66,11 @@
             @endif
         </div>
         <div class="d-flex flex-column gap-2 ms-md-auto">
+            @if($astrologer->status === 'active')
+                <a href="{{ route('admin.bookings.create', ['astrologer_id' => $astrologer->id]) }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-calendar-plus me-1"></i>Book Consultation
+                </a>
+            @endif
             <a href="{{ route('admin.astrologers.edit', $astrologer) }}" class="btn btn-warning btn-sm">
                 <i class="bi bi-pencil me-1"></i>Edit
             </a>

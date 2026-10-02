@@ -276,4 +276,168 @@ class BookingSystemTest extends TestCase
         $this->assertEquals('completed', $booking->fresh()->status);
         $this->assertEquals('Consultation completed successfully.', $booking->fresh()->admin_notes);
     }
+
+    public function test_admin_can_view_create_booking_page(): void
+    {
+        $response = $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.bookings.create'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Book Consultation on Behalf of Customer');
+        $response->assertSee($this->astrologer->display_name);
+        $response->assertSee($this->userA->full_name);
+    }
+
+    public function test_admin_can_fetch_slots_via_ajax(): void
+    {
+        $futureDate = Carbon::now()->addDays(2)->toDateString();
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->getJson(route('admin.bookings.slots', [
+                'astrologer_id' => $this->astrologer->id,
+                'date'          => $futureDate,
+                'duration'      => 30,
+            ]));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'is_working_day' => true,
+        ]);
+        $response->assertJsonStructure([
+            'is_working_day',
+            'slots' => [
+                '*' => ['start_time', 'end_time', 'label', 'is_available', 'is_booked'],
+            ],
+        ]);
+    }
+
+    public function test_admin_can_create_booking_for_existing_user(): void
+    {
+        $futureDate = Carbon::now()->addDays(4)->toDateString();
+
+        $payload = [
+            'is_new_user'       => 0,
+            'user_id'           => $this->userA->id,
+            'astrologer_id'     => $this->astrologer->id,
+            'service_id'        => $this->service->id,
+            'booking_date'      => $futureDate,
+            'start_time'        => '11:00',
+            'duration_minutes'  => 30,
+            'consultation_type' => 'call',
+            'status'            => 'confirmed',
+            'payment_status'    => 'paid',
+            'notes'             => 'Customer called support desk for career prediction.',
+            'admin_notes'       => 'Phone booking confirmed.',
+        ];
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.bookings.store'), $payload);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('bookings', [
+            'user_id'           => $this->userA->id,
+            'astrologer_id'     => $this->astrologer->id,
+            'start_time'        => '11:00:00',
+            'end_time'          => '11:30:00',
+            'consultation_type' => 'call',
+            'status'            => 'confirmed',
+            'payment_status'    => 'paid',
+        ]);
+    }
+
+    public function test_admin_can_create_booking_and_register_new_user(): void
+    {
+        $futureDate = Carbon::now()->addDays(5)->toDateString();
+
+        $payload = [
+            'is_new_user'          => 1,
+            'new_user_first_name'  => 'Sunita',
+            'new_user_last_name'   => 'Verma',
+            'new_user_email'       => 'sunita.verma@example.com',
+            'new_user_phone'       => '9876501234',
+            'astrologer_id'        => $this->astrologer->id,
+            'booking_date'         => $futureDate,
+            'start_time'           => '15:00',
+            'duration_minutes'     => 45,
+            'consultation_type'    => 'video',
+            'status'               => 'confirmed',
+            'payment_status'       => 'paid',
+            'custom_amount'        => 2500.00,
+            'notes'                => 'First time user consultation.',
+        ];
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.bookings.store'), $payload);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('users', [
+            'email'      => 'sunita.verma@example.com',
+            'first_name' => 'Sunita',
+        ]);
+
+        $newUser = User::where('email', 'sunita.verma@example.com')->first();
+
+        $this->assertDatabaseHas('bookings', [
+            'user_id'          => $newUser->id,
+            'astrologer_id'    => $this->astrologer->id,
+            'start_time'       => '15:00:00',
+            'end_time'         => '15:45:00',
+            'duration_minutes' => 45,
+            'amount'           => 2500.00,
+        ]);
+    }
+
+    public function test_admin_booking_detects_conflict_and_allows_override(): void
+    {
+        $futureDate = Carbon::now()->addDays(6)->toDateString();
+
+        // 1. Create existing booking at 10:00 - 10:30
+        Booking::create([
+            'booking_number'    => Booking::generateBookingNumber(),
+            'user_id'           => $this->userA->id,
+            'astrologer_id'     => $this->astrologer->id,
+            'booking_date'      => $futureDate,
+            'start_time'        => '10:00:00',
+            'end_time'          => '10:30:00',
+            'duration_minutes'  => 30,
+            'consultation_type' => 'chat',
+            'rate_per_minute'   => 30.00,
+            'amount'            => 900.00,
+            'payment_status'    => 'paid',
+            'status'            => 'confirmed',
+        ]);
+
+        // 2. Admin attempts to book same slot without override -> fails with validation error
+        $payload = [
+            'is_new_user'       => 0,
+            'user_id'           => $this->userB->id,
+            'astrologer_id'     => $this->astrologer->id,
+            'booking_date'      => $futureDate,
+            'start_time'        => '10:00',
+            'duration_minutes'  => 30,
+            'consultation_type' => 'chat',
+            'status'            => 'confirmed',
+            'payment_status'    => 'pending',
+            'override_conflict' => 0,
+        ];
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.bookings.store'), $payload);
+
+        $response->assertSessionHasErrors('start_time');
+
+        // 3. Admin attempts with override_conflict = 1 -> succeeds!
+        $payload['override_conflict'] = 1;
+
+        $overrideResponse = $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.bookings.store'), $payload);
+
+        $overrideResponse->assertRedirect();
+        $this->assertDatabaseHas('bookings', [
+            'user_id'       => $this->userB->id,
+            'astrologer_id' => $this->astrologer->id,
+            'start_time'    => '10:00:00',
+        ]);
+    }
 }

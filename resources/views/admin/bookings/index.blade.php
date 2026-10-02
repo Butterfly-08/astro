@@ -4,6 +4,16 @@
 @section('page_title', 'Consultation Bookings Management')
 
 @section('content')
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h5 class="fw-bold mb-0 text-dark" style="font-family:'Outfit',sans-serif;">Customer Consultations Overview</h5>
+        <span class="text-muted small">Manage schedules, update statuses, and create assisted bookings on behalf of clients.</span>
+    </div>
+    <a href="{{ route('admin.bookings.create') }}" class="btn btn-primary fw-semibold shadow-sm">
+        <i class="bi bi-calendar-plus me-1"></i> Book New Consultation
+    </a>
+</div>
+
 {{-- Stat Cards --}}
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl">
@@ -88,7 +98,12 @@
 <div class="card border-0 shadow-sm" style="border-radius: 12px;">
     <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
         <h6 class="mb-0 fw-bold"><i class="bi bi-calendar-week text-primary me-2"></i>Consultation Records</h6>
-        <span class="badge bg-light text-dark border">{{ $bookings->total() }} Total</span>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('admin.bookings.create') }}" class="btn btn-sm btn-outline-primary fw-semibold">
+                <i class="bi bi-plus-lg me-1"></i> New Booking
+            </a>
+            <span class="badge bg-light text-dark border">{{ $bookings->total() }} Total</span>
+        </div>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

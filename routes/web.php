@@ -169,6 +169,9 @@ Route::prefix('admin')->group(function () {
         // -----------------------------------------------------------------------
         Route::prefix('bookings')->name('admin.bookings.')->group(function () {
             Route::get('/', [AdminBookingController::class, 'index'])->name('index');
+            Route::get('/create', [AdminBookingController::class, 'create'])->name('create');
+            Route::post('/', [AdminBookingController::class, 'store'])->name('store');
+            Route::get('/slots', [AdminBookingController::class, 'getAvailableSlots'])->name('slots');
             Route::get('/{booking}', [AdminBookingController::class, 'show'])->name('show');
             Route::put('/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('update-status');
         });

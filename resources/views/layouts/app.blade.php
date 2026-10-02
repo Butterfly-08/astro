@@ -95,6 +95,19 @@
             color: var(--astro-purple) !important;
         }
 
+        .website-language-select {
+            min-width: 132px;
+            border-color: var(--astro-border);
+            color: var(--astro-purple);
+            font-size: 0.82rem;
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+
+        #google_translate_element {
+            display: none;
+        }
+
         /* Gold Button */
         .btn-astro-gold {
             background-color: var(--astro-gold);
@@ -224,6 +237,18 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-2">
+                    <label class="visually-hidden" for="website-language">Website language</label>
+                    <select id="website-language" class="form-select website-language-select" aria-label="Website language" onchange="changeWebsiteLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hi">Hindi</option>
+                        <option value="ta">Tamil</option>
+                        <option value="te">Telugu</option>
+                        <option value="bn">Bengali</option>
+                        <option value="mr">Marathi</option>
+                        <option value="gu">Gujarati</option>
+                        <option value="pa">Punjabi</option>
+                    </select>
+                    <div id="google_translate_element" aria-hidden="true"></div>
                     @auth('web')
                         <div class="dropdown">
                             <button class="btn btn-astro-outline dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -364,6 +389,35 @@
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,ta,te,bn,mr,gu,pa',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function changeWebsiteLanguage(language) {
+            const translationSelect = document.querySelector('.goog-te-combo');
+
+            if (language === 'en') {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                window.location.reload();
+                return;
+            }
+
+            document.cookie = `googtrans=/en/${language}; path=/;`;
+
+            if (translationSelect) {
+                translationSelect.value = language;
+                translationSelect.dispatchEvent(new Event('change'));
+            } else {
+                window.location.reload();
+            }
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     @stack('scripts')
 </body>
 </html>
