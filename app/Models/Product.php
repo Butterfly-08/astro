@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -15,15 +16,28 @@ class Product extends Model
         'category_id',
         'name',
         'slug',
+        'sku',
+        'short_description',
         'description',
         'price',
+        'sale_price',
+        'stock',
         'image',
-        'is_active',
+        'gallery',
+        'status',
+        'is_featured',
+        'rating_avg',
+        'total_reviews',
     ];
 
     protected $casts = [
-        'price'     => 'decimal:2',
-        'is_active' => 'boolean',
+        'price'         => 'decimal:2',
+        'sale_price'    => 'decimal:2',
+        'stock'         => 'integer',
+        'gallery'       => 'array',
+        'is_featured'   => 'boolean',
+        'rating_avg'    => 'decimal:2',
+        'total_reviews' => 'integer',
     ];
 
     /*
@@ -43,46 +57,55 @@ class Product extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
-        // Existing database has no featured column.
-        // Keep this scope for compatibility.
-        return $query;
+        return $query->where('is_featured', true);
     }
 
-    public function scopeInStock($query)
+    public function scopeInStock(Builder $query): Builder
     {
-        // Existing database has no stock column.
-        // Active products are treated as available.
-        return $query->where('is_active', true);
+        return $query->where('stock', '>', 0)
+            ->where('status', '!=', 'out_of_stock');
     }
 
-    public function scopeByCategory($query, int $categoryId)
+    public function scopeByCategory(Builder $query, int $categoryId): Builder
     {
         return $query->where('category_id', $categoryId);
     }
 
-    public function scopeSearch($query, string $term)
+    public function scopeSearch(Builder $query, string $term): Builder
     {
-        return $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', "%{$term}%")
-              ->orWhere('description', 'like', "%{$term}%");
+        return $query->where(function (Builder $query) use ($term) {
+            $query->where('name', 'like', "%{$term}%")
+                ->orWhere('sku', 'like', "%{$term}%")
+                ->orWhere('short_description', 'like', "%{$term}%")
+                ->orWhere('description', 'like', "%{$term}%");
         });
     }
 
-    public function scopePriceRange($query, ?float $min, ?float $max)
+    public function scopePriceRange(Builder $query, ?float $min, ?float $max): Builder
     {
         if ($min !== null) {
-            $query->where('price', '>=', $min);
+            $query->where(function (Builder $query) use ($min) {
+                $query->where('sale_price', '>=', $min)
+                    ->orWhere(function (Builder $query) use ($min) {
+                        $query->whereNull('sale_price')->where('price', '>=', $min);
+                    });
+            });
         }
 
         if ($max !== null) {
-            $query->where('price', '<=', $max);
+            $query->where(function (Builder $query) use ($max) {
+                $query->where('sale_price', '<=', $max)
+                    ->orWhere(function (Builder $query) use ($max) {
+                        $query->whereNull('sale_price')->where('price', '<=', $max);
+                    });
+            });
         }
 
         return $query;
@@ -96,22 +119,26 @@ class Product extends Model
 
     public function getIsOnSaleAttribute(): bool
     {
-        return false;
+        return $this->sale_price !== null && $this->sale_price < $this->price;
     }
 
     public function getEffectivePriceAttribute(): float
     {
-        return (float) $this->price;
+        return (float) ($this->is_on_sale ? $this->sale_price : $this->price);
     }
 
     public function getDiscountPercentageAttribute(): int
     {
-        return 0;
+        if (!$this->is_on_sale || $this->price <= 0) {
+            return 0;
+        }
+
+        return (int) round((($this->price - $this->sale_price) / $this->price) * 100);
     }
 
     public function getInStockAttribute(): bool
     {
-        return (bool) $this->is_active;
+        return $this->stock > 0 && $this->status === 'active';
     }
 
     public function getStockBadgeAttribute(): array
@@ -134,42 +161,6 @@ class Product extends Model
         ];
     }
 
-    public function getStockAttribute(): int
-    {
-        // Existing DB has no stock column.
-        // Use a safe UI fallback for the product page.
-        return $this->is_active ? 99 : 0;
-    }
-
-    public function getRatingAvgAttribute(): float
-    {
-        return 0.0;
-    }
-
-    public function getTotalReviewsAttribute(): int
-    {
-        return 0;
-    }
-
-    public function getSkuAttribute(): string
-    {
-        return 'AV-' . str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
-    }
-
-    public function getShortDescriptionAttribute(): ?string
-    {
-        if (!$this->description) {
-            return null;
-        }
-
-        return Str::limit(strip_tags($this->description), 180);
-    }
-
-    public function getIsFeaturedAttribute(): bool
-    {
-        return false;
-    }
-
     /*
     |--------------------------------------------------------------------------
     | Boot
@@ -181,6 +172,9 @@ class Product extends Model
         static::creating(function (Product $product) {
             if (empty($product->slug)) {
                 $product->slug = Str::slug($product->name);
+            }
+            if (empty($product->sku)) {
+                $product->sku = 'AV-' . strtoupper(Str::random(8));
             }
         });
 

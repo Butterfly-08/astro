@@ -1,0 +1,486 @@
+/* ==========================================================================
+   AstroVani — Live Background Wallpaper Video & Celestial FX System
+   ========================================================================== */
+
+/* 1. Fullscreen Fixed Wallpaper Container */
+.astro-wallpaper-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -999;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: #0b0314;
+    transition: background-color 0.8s ease;
+}
+
+/* Background Video Element */
+.astro-wallpaper-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    opacity: 0.65;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s ease;
+    filter: brightness(0.75) saturate(1.25) contrast(1.1);
+}
+
+.astro-wallpaper-video.fade-out {
+    opacity: 0;
+}
+
+/* Interactive & Procedural Constellation Canvas */
+.astro-starfield-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.85;
+    transition: opacity 0.5s ease;
+}
+
+/* Dynamic Depth Gradient & Vignette Overlay */
+.astro-wallpaper-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background: radial-gradient(circle at 50% 20%, rgba(26, 11, 46, 0.18) 0%, rgba(15, 5, 26, 0.32) 65%, rgba(9, 2, 18, 0.52) 100%);
+    pointer-events: none;
+    transition: background 0.8s ease;
+}
+
+/* 2. Global Frosted Glass Aesthetics For App Layout Across ALL Pages */
+body {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: #1F2937;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Translucent Frosted Glass Navbar & Topbar */
+.astro-navbar {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(245, 176, 65, 0.35) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.astro-topbar {
+    background: rgba(26, 11, 46, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(245, 176, 65, 0.25) !important;
+}
+
+/* Let the animated wallpaper show through shared page backgrounds. */
+.shop-page,
+.cart-page,
+.checkout-page,
+.booking-page {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+.app-main,
+main.flex-grow-1,
+.admin-main {
+    background: rgba(255, 255, 255, 0.9) !important;
+    background-image: none !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.admin-content,
+.admin-wrapper {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+/* Keep hero text readable while allowing a subtle hint of the wallpaper */
+.hero-banner,
+.astrologer-hero,
+.cart-hero,
+.checkout-hero,
+.service-hero,
+.booking-hero,
+.service-detail-hero,
+.profile-header,
+div[style*="linear-gradient(135deg, #1A0B2E"] {
+    background: linear-gradient(135deg, rgba(26, 11, 46, 0.82) 0%, rgba(45, 18, 77, 0.76) 55%, rgba(72, 27, 127, 0.72) 100%) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-bottom: 3px solid #F5B041 !important;
+}
+
+/* Glassmorphic Sections */
+section.bg-white,
+section[style*="background-color: #FFFFFF;"],
+section[style*="background-color: #F8F9FA;"],
+section.bg-light,
+.bg-white {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+section.bg-white,
+section[style*="background-color: #FFFFFF;"],
+section[style*="background-color: #F8F9FA;"],
+section.bg-light {
+    border-top: 1px solid rgba(245, 176, 65, 0.18);
+    border-bottom: 1px solid rgba(245, 176, 65, 0.18);
+}
+
+/* Frosted Glass Cards Across Pages */
+.service-tile,
+.astro-home-card,
+.product-card,
+.astrologer-card,
+.cart-table-card,
+.form-section,
+.order-summary-card,
+.filter-box,
+.card,
+.auth-card,
+.admin-card,
+.stat-card,
+.booking-card,
+.related-card,
+.info-tab-content,
+.prod-table-card,
+.filter-bar,
+.stat-mini-card,
+.booking-admin-card,
+.booking-admin-header,
+.booking-mode-card:not(.selected),
+.consult-type-card:not(.selected),
+.slot-pill:not(.selected):not(.disabled),
+.duration-btn:not(.active),
+.filter-pill:not(.active),
+.search-bar {
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(245, 176, 65, 0.22) !important;
+    box-shadow: 0 8px 24px rgba(26, 11, 46, 0.08) !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+.service-tile:hover,
+.astro-home-card:hover,
+.product-card:hover,
+.astrologer-card:hover,
+.card:hover {
+    border-color: rgba(245, 176, 65, 0.6) !important;
+    box-shadow: 0 14px 35px rgba(245, 176, 65, 0.2) !important;
+}
+
+/* List Groups & Tables */
+.list-group-item {
+    background-color: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.table-responsive .table {
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Strengthen Bootstrap tint panels and badges used throughout all layouts. */
+.bg-opacity-10 {
+    --bs-bg-opacity: 0.24 !important;
+}
+
+.bg-opacity-15 {
+    --bs-bg-opacity: 0.3 !important;
+}
+
+.bg-opacity-25 {
+    --bs-bg-opacity: 0.4 !important;
+}
+
+/* Admin Sidebar Glassmorphism */
+.admin-sidebar {
+    background: #1A0B2E !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-right: 1px solid rgba(245, 176, 65, 0.25) !important;
+}
+
+.admin-topbar {
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(245, 176, 65, 0.2) !important;
+}
+
+/* Frosted Glass Footer */
+.astro-footer {
+    background: rgba(18, 7, 32, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-top: 3px solid var(--astro-gold) !important;
+}
+
+/* 3. Floating Live Wallpaper Control Widget */
+.astro-wallpaper-control-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1050;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2D124D 0%, #1A0B2E 100%);
+    border: 1.5px solid #F5B041;
+    color: #F5B041;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 176, 65, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.astro-wallpaper-control-toggle:hover {
+    transform: scale(1.08) rotate(15deg);
+    box-shadow: 0 8px 25px rgba(245, 176, 65, 0.45);
+    color: #FFFFFF;
+}
+
+.astro-wallpaper-control-toggle.is-pulsing::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #F5B041;
+    animation: astroPulse 2.5s infinite;
+    pointer-events: none;
+}
+
+@keyframes astroPulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Wallpaper Settings Panel */
+.astro-wallpaper-panel {
+    position: fixed;
+    bottom: 84px;
+    right: 24px;
+    width: 320px;
+    background: #1A0B2E;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid rgba(245, 176, 65, 0.35);
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(245, 176, 65, 0.15);
+    padding: 18px;
+    color: #F3F4F6;
+    z-index: 1050;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.astro-wallpaper-panel.is-open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.astro-wallpaper-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(245, 176, 65, 0.2);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+.astro-wallpaper-panel-header h6 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #F5B041;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.astro-wallpaper-close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.astro-wallpaper-close-btn:hover {
+    color: #F5B041;
+}
+
+/* Wallpaper Theme Option Buttons */
+.astro-wallpaper-themes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.astro-wallpaper-theme-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #E5E7EB;
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.astro-wallpaper-theme-btn:hover {
+    background: rgba(245, 176, 65, 0.15);
+    border-color: rgba(245, 176, 65, 0.4);
+    color: #FFFFFF;
+}
+
+.astro-wallpaper-theme-btn.active {
+    background: linear-gradient(135deg, rgba(245, 176, 65, 0.3) 0%, rgba(212, 172, 13, 0.3) 100%);
+    border-color: #F5B041;
+    color: #F5B041;
+    box-shadow: 0 0 10px rgba(245, 176, 65, 0.25);
+}
+
+/* Slider & Controls */
+.astro-wallpaper-control-group {
+    margin-bottom: 12px;
+}
+
+.astro-wallpaper-control-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.astro-wallpaper-slider {
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.astro-wallpaper-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #F5B041;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(245, 176, 65, 0.6);
+}
+
+/* Quick Toggles Row */
+.astro-wallpaper-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.astro-wallpaper-action-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.astro-wallpaper-action-btn:hover {
+    background: rgba(245, 176, 65, 0.2);
+    border-color: #F5B041;
+    color: #F5B041;
+}
+
+.astro-wallpaper-action-btn.active {
+    background: #F5B041;
+    color: #1A0B2E;
+    border-color: #F5B041;
+    font-weight: 600;
+}
+
+/* Status indicator badge */
+.astro-wallpaper-badge {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10B981;
+    box-shadow: 0 0 6px #10B981;
+}
+.astro-wallpaper-badge.paused {
+    background-color: #EF4444;
+    box-shadow: 0 0 6px #EF4444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .astro-wallpaper-control-toggle {
+        bottom: 16px;
+        right: 16px;
+        width: 42px;
+        height: 42px;
+        font-size: 1.1rem;
+    }
+    .astro-wallpaper-panel {
+        bottom: 68px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+    }
+}

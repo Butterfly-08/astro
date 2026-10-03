@@ -102,10 +102,14 @@
             box-shadow: 0 0 0 0.2rem rgba(45, 18, 77, 0.15);
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/astro-live-wallpaper.css') }}">
     @stack('styles')
 </head>
 <body>
-    <div class="container">
+    <!-- Live Background Wallpaper Video & Constellation FX -->
+    <x-live-wallpaper />
+
+    <div class="container position-relative" style="z-index: 10;">
         <div class="row justify-content-center">
             @yield('content')
         </div>
@@ -113,6 +117,7 @@
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/astro-live-wallpaper.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

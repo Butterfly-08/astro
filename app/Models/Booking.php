@@ -4,10 +4,23 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $astrologer_id
+ * @property int|null $service_id
+ * @property string $status
+ * @property \Illuminate\Support\Carbon $booking_date
+ * @property string $start_time
+ * @property string $end_time
+ * @property string|null $cancellation_reason
+ */
 class Booking extends Model
 {
     use HasFactory;
@@ -61,31 +74,36 @@ class Booking extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function review(): HasOne
+    {
+        return $this->hasOne(AstrologerReview::class);
+    }
+
     // -------------------------------------------------------------------------
     // Scopes
     // -------------------------------------------------------------------------
 
-    public function scopePending($query)
+    public function scopePending(Builder $query): Builder
     {
         return $query->where('status', 'pending');
     }
 
-    public function scopeConfirmed($query)
+    public function scopeConfirmed(Builder $query): Builder
     {
         return $query->where('status', 'confirmed');
     }
 
-    public function scopeCompleted($query)
+    public function scopeCompleted(Builder $query): Builder
     {
         return $query->where('status', 'completed');
     }
 
-    public function scopeCancelled($query)
+    public function scopeCancelled(Builder $query): Builder
     {
         return $query->where('status', 'cancelled');
     }
 
-    public function scopeUpcoming($query)
+    public function scopeUpcoming(Builder $query): Builder
     {
         return $query->where(function ($q) {
             $q->where('booking_date', '>', now()->toDateString())
@@ -96,7 +114,7 @@ class Booking extends Model
         })->whereIn('status', ['pending', 'confirmed']);
     }
 
-    public function scopePast($query)
+    public function scopePast(Builder $query): Builder
     {
         return $query->where(function ($q) {
             $q->where('booking_date', '<', now()->toDateString())

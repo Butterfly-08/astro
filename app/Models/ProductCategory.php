@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
@@ -11,17 +12,22 @@ class ProductCategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'categories';
+    protected $table = 'product_categories';
 
     protected $fillable = [
         'name',
         'slug',
         'description',
-        'is_active',
+        'icon',
+        'image',
+        'status',
+        'sort_order',
+        'is_featured',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'sort_order'  => 'integer',
+        'is_featured' => 'boolean',
     ];
 
     // -------------------------------------------------------------------------
@@ -36,27 +42,26 @@ class ProductCategory extends Model
     public function activeProducts(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id')
-            ->where('is_active', true);
+            ->where('status', 'active');
     }
 
     // -------------------------------------------------------------------------
     // Scopes
     // -------------------------------------------------------------------------
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
-        // Existing categories table has no featured column.
-        return $query;
+        return $query->where('is_featured', true);
     }
 
-    public function scopeOrdered($query)
+    public function scopeOrdered(Builder $query): Builder
     {
-        return $query->orderBy('name');
+        return $query->orderBy('sort_order')->orderBy('name');
     }
 
     // -------------------------------------------------------------------------

@@ -44,7 +44,7 @@ class ShopController extends Controller
 
         $query->priceRange($minPrice, $maxPrice);
 
-        // Existing DB has only is_active for stock availability
+        // Products are available for purchase when their status is active.
         if ($request->boolean('in_stock')) {
             $query->inStock();
         }
@@ -64,12 +64,12 @@ class ShopController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        // Existing DB uses categories table + is_active
+        // Count active products for each category.
         $categories = ProductCategory::active()
             ->ordered()
             ->withCount([
                 'products' => function ($q) {
-                    $q->where('is_active', true);
+                    $q->where('status', 'active');
                 }
             ])
             ->get();
@@ -97,7 +97,7 @@ class ShopController extends Controller
             ->ordered()
             ->withCount([
                 'products' => function ($q) {
-                    $q->where('is_active', true);
+                    $q->where('status', 'active');
                 }
             ])
             ->get();

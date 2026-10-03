@@ -105,7 +105,7 @@
             padding-bottom: 7px;
         }
 
-        #google_translate_element {
+                                #google_translate_element {
             display: none;
         }
 
@@ -214,10 +214,14 @@
         }
     </style>
 
+    <link rel="stylesheet" href="{{ asset('css/astro-live-wallpaper.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/astro-dock.css') }}">
     @stack('styles')
 </head>
 
 <body>
+    <!-- Live Background Wallpaper Video & Celestial Constellation FX -->
+    <x-live-wallpaper />
 
     <!-- Top Bar -->
     <div class="astro-topbar d-none d-md-block">
@@ -709,6 +713,7 @@
 
     </footer>
 
+    <x-app-dock />
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -741,6 +746,8 @@
         }
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="{{ asset('js/astro-live-wallpaper.js') }}"></script>
+    <script src="{{ asset('js/astro-dock.js') }}"></script>
 
     @stack('scripts')
 

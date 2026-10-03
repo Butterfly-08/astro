@@ -1,0 +1,130 @@
+.astro-dock {
+    --dock-item-size: 48px;
+    position: fixed;
+    z-index: 1040;
+    left: 50%;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    padding: 8px;
+    border: 1px solid rgba(245, 176, 65, 0.45);
+    border-radius: 22px;
+    background: #1A0B2E;
+    box-shadow: 0 12px 32px rgba(10, 3, 20, 0.34), 0 0 18px rgba(245, 176, 65, 0.12);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transform: translateX(-50%);
+}
+
+.astro-dock-item {
+    position: relative;
+    display: grid;
+    flex: 0 0 var(--dock-item-size);
+    width: var(--dock-item-size);
+    height: var(--dock-item-size);
+    place-items: center;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transform: translateY(var(--dock-lift, 0px)) scale(var(--dock-scale, 1));
+    transform-origin: center bottom;
+    transition: transform 140ms ease-out, color 140ms ease-out, background-color 140ms ease-out, border-color 140ms ease-out;
+    will-change: transform;
+}
+
+.astro-dock-item:hover,
+.astro-dock-item:focus-visible,
+.astro-dock-item.is-active {
+    border-color: rgba(245, 176, 65, 0.42);
+    background: rgba(245, 176, 65, 0.16);
+    color: #F5B041;
+}
+
+.astro-dock-item:focus-visible {
+    outline: 2px solid #F5B041;
+    outline-offset: 3px;
+}
+
+.astro-dock-label {
+    position: absolute;
+    bottom: calc(100% + 11px);
+    left: 50%;
+    z-index: 1;
+    padding: 5px 9px;
+    border: 1px solid rgba(245, 176, 65, 0.4);
+    border-radius: 7px;
+    background: #1A0B2E;
+    color: #fff;
+    font: 600 0.72rem/1.2 'Plus Jakarta Sans', sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 120ms ease-out, transform 120ms ease-out;
+}
+
+.astro-dock-item:hover .astro-dock-label,
+.astro-dock-item:focus-visible .astro-dock-label {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.astro-dock-count {
+    position: absolute;
+    top: 1px;
+    right: 0;
+    display: grid;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    place-items: center;
+    border-radius: 999px;
+    background: #F5B041;
+    color: #1A0B2E;
+    font: 700 0.62rem/1 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    padding-bottom: 82px;
+}
+
+@media (max-width: 576px) {
+    .astro-dock {
+        --dock-item-size: 44px;
+        gap: 5px;
+        bottom: max(10px, env(safe-area-inset-bottom));
+        padding: 6px;
+        border-radius: 19px;
+    }
+
+    .astro-dock-item {
+        border-radius: 13px;
+        font-size: 1.12rem;
+    }
+
+    .astro-wallpaper-control-toggle {
+        bottom: 76px;
+    }
+
+    .astro-wallpaper-panel {
+        bottom: 132px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .astro-dock-item,
+    .astro-dock-label {
+        transition: none;
+    }
+}
+
+@media print {
+    .astro-dock {
+        display: none;
+    }
+}

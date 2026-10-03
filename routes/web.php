@@ -205,6 +205,9 @@ Route::middleware('auth:web')->group(function () {
 
             Route::post('/{booking}/cancel', [UserBookingController::class, 'cancel'])
                 ->name('cancel');
+
+            Route::post('/{booking}/review', [UserBookingController::class, 'review'])
+                ->name('review');
         });
 
 

@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $display_name
+ */
 class Astrologer extends Model
 {
     /** @use HasFactory<\Database\Factories\AstrologerFactory> */
@@ -159,6 +163,11 @@ class Astrologer extends Model
     public function availability(): HasMany
     {
         return $this->hasMany(AstrologerAvailability::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(AstrologerReview::class);
     }
 
     /**

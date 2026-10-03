@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ */
 class Service extends Model
 {
     /** @use HasFactory<\Database\Factories\ServiceFactory> */

@@ -8,22 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CartItem extends Model
 {
     protected $fillable = [
-        'cart_id',
-        'product_variant_id',
         'session_id',
         'user_id',
         'product_id',
         'quantity',
-        'price',
     ];
 
     protected $casts = [
-        'cart_id' => 'integer',
-        'product_variant_id' => 'integer',
         'user_id' => 'integer',
         'product_id' => 'integer',
         'quantity' => 'integer',
-        'price' => 'decimal:2',
     ];
 
     // -------------------------------------------------------------------------
@@ -44,12 +38,17 @@ class CartItem extends Model
     // Computed Accessors
     // -------------------------------------------------------------------------
 
+    public function getPriceAttribute(): float
+    {
+        return (float) ($this->product?->effective_price ?? 0);
+    }
+
     /**
      * Line-item subtotal
      * Stored cart price × quantity
      */
     public function getLineTotalAttribute(): float
     {
-        return (float) $this->price * $this->quantity;
+        return $this->price * $this->quantity;
     }
 }

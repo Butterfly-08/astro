@@ -212,7 +212,7 @@
 
                 {{-- Reviews Tab --}}
                 <div class="tab-pane fade" id="tab-reviews">
-                    <div class="text-center py-4">
+                    <div class="text-center py-4 border-bottom mb-4">
                         <div class="display-5 fw-bold" style="color:var(--astro-purple);">{{ number_format($astrologer->rating_avg, 1) }}</div>
                         <div class="star-rating fs-4 mb-1">
                             @for($i=1;$i<=5;$i++)
@@ -220,11 +220,30 @@
                             @endfor
                         </div>
                         <div class="text-muted small">Based on {{ number_format($astrologer->total_reviews) }} reviews</div>
-                        <div class="mt-4 text-muted">
-                            <i class="bi bi-chat-square-text display-6 d-block mb-2 opacity-25"></i>
-                            Customer reviews will appear here after Phase 3 is implemented.
-                        </div>
                     </div>
+
+                    @forelse($astrologer->reviews as $review)
+                        <article class="border rounded-3 p-3 mb-3 bg-white">
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+                                <div>
+                                    <div class="fw-semibold">Verified customer</div>
+                                    <div class="text-success small"><i class="bi bi-patch-check-fill me-1"></i>Completed consultation</div>
+                                </div>
+                                <time class="text-muted small" datetime="{{ $review->created_at->toDateString() }}">{{ $review->created_at->format('d M Y') }}</time>
+                            </div>
+                            <div class="star-rating my-2" aria-label="Rated {{ $review->rating }} out of 5 stars">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="bi bi-star{{ $i <= $review->rating ? '-fill' : '' }}" aria-hidden="true"></i>
+                                @endfor
+                            </div>
+                            <p class="mb-0 text-secondary" style="white-space: pre-line;">{{ $review->body }}</p>
+                        </article>
+                    @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-chat-square-text fs-3 d-block mb-2"></i>
+                            No written reviews yet. Reviews from completed consultations will appear here.
+                        </div>
+                    @endforelse
                 </div>
 
             </div>

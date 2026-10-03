@@ -237,12 +237,16 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/astro-live-wallpaper.css') }}">
     @stack('styles')
 </head>
 <body>
+    <!-- Live Background Wallpaper Video & Constellation FX -->
+    <x-live-wallpaper />
+
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <div class="admin-wrapper">
+    <div class="admin-wrapper position-relative" style="z-index: 10;">
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar" id="adminSidebar">
             <a href="{{ route('admin.dashboard') }}" class="admin-brand">
@@ -469,6 +473,7 @@
             });
         }
     </script>
+    <script src="{{ asset('js/astro-live-wallpaper.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

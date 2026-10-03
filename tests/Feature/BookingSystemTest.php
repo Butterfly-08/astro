@@ -242,6 +242,105 @@ class BookingSystemTest extends TestCase
         $this->assertEquals('Schedule conflict, need to reschedule.', $booking->fresh()->cancellation_reason);
     }
 
+    public function test_completed_booking_owner_can_submit_one_verified_review(): void
+    {
+        $booking = Booking::create([
+            'booking_number' => Booking::generateBookingNumber(),
+            'user_id' => $this->userA->id,
+            'astrologer_id' => $this->astrologer->id,
+            'service_id' => $this->service->id,
+            'booking_date' => Carbon::now()->subDays(2)->toDateString(),
+            'start_time' => '10:00:00',
+            'end_time' => '10:30:00',
+            'duration_minutes' => 30,
+            'consultation_type' => 'chat',
+            'amount' => 900.00,
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        $response = $this->actingAs($this->userA, 'web')
+            ->post(route('user.bookings.review', $booking), [
+                'rating' => 5,
+                'body' => 'The consultation was clear and genuinely helpful.',
+            ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('astrologer_reviews', [
+            'booking_id' => $booking->id,
+            'astrologer_id' => $this->astrologer->id,
+            'rating' => 5,
+        ]);
+        $this->assertSame('5.00', $this->astrologer->fresh()->rating_avg);
+        $this->assertSame(1, $this->astrologer->fresh()->total_reviews);
+
+        $this->get(route('astrologers.show', $this->astrologer->slug))
+            ->assertOk()
+            ->assertSee('Verified customer')
+            ->assertSee('The consultation was clear and genuinely helpful.');
+
+        $this->actingAs($this->userA, 'web')
+            ->post(route('user.bookings.review', $booking), [
+                'rating' => 4,
+                'body' => 'A second review should not be accepted.',
+            ])
+            ->assertSessionHasErrors('review');
+
+        $this->assertDatabaseCount('astrologer_reviews', 1);
+    }
+
+    public function test_only_booking_owner_can_review_a_completed_booking(): void
+    {
+        $booking = Booking::create([
+            'booking_number' => Booking::generateBookingNumber(),
+            'user_id' => $this->userA->id,
+            'astrologer_id' => $this->astrologer->id,
+            'service_id' => $this->service->id,
+            'booking_date' => Carbon::now()->subDays(2)->toDateString(),
+            'start_time' => '10:00:00',
+            'end_time' => '10:30:00',
+            'duration_minutes' => 30,
+            'consultation_type' => 'chat',
+            'amount' => 900.00,
+            'status' => 'completed',
+        ]);
+
+        $this->actingAs($this->userB, 'web')
+            ->post(route('user.bookings.review', $booking), [
+                'rating' => 5,
+                'body' => 'This user did not attend the consultation.',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('astrologer_reviews', 0);
+    }
+
+    public function test_incomplete_booking_cannot_be_reviewed(): void
+    {
+        $booking = Booking::create([
+            'booking_number' => Booking::generateBookingNumber(),
+            'user_id' => $this->userA->id,
+            'astrologer_id' => $this->astrologer->id,
+            'service_id' => $this->service->id,
+            'booking_date' => Carbon::now()->addDays(2)->toDateString(),
+            'start_time' => '10:00:00',
+            'end_time' => '10:30:00',
+            'duration_minutes' => 30,
+            'consultation_type' => 'chat',
+            'amount' => 900.00,
+            'status' => 'confirmed',
+        ]);
+
+        $this->actingAs($this->userA, 'web')
+            ->post(route('user.bookings.review', $booking), [
+                'rating' => 5,
+                'body' => 'This consultation has not happened yet.',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('astrologer_reviews', 0);
+    }
+
     public function test_admin_can_view_and_update_booking_status(): void
     {
         $booking = Booking::create([

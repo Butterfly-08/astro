@@ -7,25 +7,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
+/**
+ * @property int $id
+ * @property string $full_name
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Actual users table columns:
-     * id
-     * name
-     * email
-     * email_verified_at
-     * password
-     * remember_token
-     * created_at
-     * updated_at
-     */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
+        'phone',
         'password',
+        'date_of_birth',
+        'gender',
+        'city',
+        'state',
+        'country',
+        'profile_image',
+        'status',
         'email_verified_at',
     ];
 
@@ -52,7 +54,10 @@ class User extends Authenticatable
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->name
+            get: fn () => trim(implode(' ', array_filter([
+                $this->first_name,
+                $this->last_name,
+            ])))
         );
     }
 

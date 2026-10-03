@@ -103,6 +103,51 @@
                     @endif
                 </div>
             </div>
+
+            @if($booking->status === 'completed')
+                <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 14px;">
+                    <h5 class="fw-bold mb-1">Consultation review</h5>
+                    <p class="text-muted small mb-3">Only the customer who completed this booking can leave a review.</p>
+
+                    @if($booking->review)
+                        <div class="d-flex align-items-center gap-1 text-warning mb-2" aria-label="Rated {{ $booking->review->rating }} out of 5 stars">
+                            @for($star = 1; $star <= 5; $star++)
+                                <i class="bi bi-star{{ $star <= $booking->review->rating ? '-fill' : '' }}" aria-hidden="true"></i>
+                            @endfor
+                            <span class="text-muted small ms-2">Submitted {{ $booking->review->created_at->format('d M Y') }}</span>
+                        </div>
+                        <p class="mb-0">{{ $booking->review->body }}</p>
+                    @else
+                        @error('review')
+                            <div class="alert alert-danger py-2">{{ $message }}</div>
+                        @enderror
+                        <form action="{{ route('user.bookings.review', $booking) }}" method="POST">
+                            @csrf
+                            <fieldset class="mb-3">
+                                <legend class="form-label fw-semibold small">Your rating</legend>
+                                <div class="d-flex gap-2" role="radiogroup" aria-label="Rate your consultation">
+                                    @for($rating = 1; $rating <= 5; $rating++)
+                                        <label class="btn btn-outline-warning">
+                                            <input class="visually-hidden" type="radio" name="rating" value="{{ $rating }}" @checked(old('rating', 5) == $rating) required>
+                                            <span aria-hidden="true">{{ $rating }} <i class="bi bi-star-fill"></i></span>
+                                            <span class="visually-hidden">{{ $rating }} stars</span>
+                                        </label>
+                                    @endfor
+                                </div>
+                                @error('rating')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                            </fieldset>
+                            <div class="mb-3">
+                                <label for="review-body" class="form-label fw-semibold small">Your review</label>
+                                <textarea id="review-body" name="body" class="form-control" rows="4" minlength="10" maxlength="2000" required>{{ old('body') }}</textarea>
+                                @error('body')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                            </div>
+                            <button type="submit" class="btn btn-astro-primary">
+                                <i class="bi bi-send me-1"></i>Submit verified review
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- Right Column: Astrologer Summary -->
