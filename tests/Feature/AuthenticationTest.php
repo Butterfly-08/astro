@@ -61,6 +61,10 @@ class AuthenticationTest extends TestCase
             'last_name' => 'Patel',
             'status' => 'active',
         ]);
+
+        $this->get('/dashboard')
+            ->assertOk()
+            ->assertSee('20 May, 1998');
     }
 
     /**
@@ -198,7 +202,7 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect('/admin/dashboard');
         $this->assertAuthenticatedAs($admin, 'admin');
 
-        $dashboardResponse = $this->actingAs($admin, 'admin')->get('/admin/dashboard');
+        $dashboardResponse = $this->get('/admin/dashboard');
         $dashboardResponse->assertStatus(200);
         $dashboardResponse->assertSee('Master Administration Dashboard');
     }

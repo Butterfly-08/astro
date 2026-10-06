@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -17,19 +17,47 @@ class DashboardController extends Controller
     {
         $user = Auth::guard('web')->user();
 
-        // Database-driven metrics (with safe checks for tables created in future phases)
-        $totalOrders = Schema::hasTable('orders') ? \Illuminate\Support\Facades\DB::table('orders')->where('user_id', $user->id)->count() : 0;
-        $totalBookings = Schema::hasTable('bookings') ? \Illuminate\Support\Facades\DB::table('bookings')->where('user_id', $user->id)->count() : 0;
-        $upcomingBookings = Schema::hasTable('bookings') ? \Illuminate\Support\Facades\DB::table('bookings')
-            ->where('user_id', $user->id)
-            ->where('booking_date', '>=', now()->toDateString())
-            ->whereIn('status', ['pending', 'confirmed'])
-            ->count() : 0;
-        $wishlistCount = Schema::hasTable('wishlists') ? \Illuminate\Support\Facades\DB::table('wishlists')->where('user_id', $user->id)->count() : 0;
-        
-        $recentBookings = Schema::hasTable('bookings') 
-            ? \App\Models\Booking::where('user_id', $user->id)->with('astrologer')->latest()->take(3)->get() 
-            : collect();
+        /*
+         * Query tables directly — they exist after migrations.
+         * Removed Schema::hasTable() which hits information_schema
+         * on every request and causes 30-second timeouts.
+         */
+        try {
+            $totalOrders = DB::table('orders')
+                ->where('user_id', $user->id)
+                ->count();
+        } catch (\Throwable) {
+            $totalOrders = 0;
+        }
+        try {
+            $totalBookings = DB::table('bookings')
+                ->where('user_id', $user->id)
+                ->count();
+
+            $upcomingBookings = DB::table('bookings')
+                ->where('user_id', $user->id)
+                ->where('booking_date', '>=', now()->toDateString())
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->count();
+
+            $recentBookings = Booking::where('user_id', $user->id)
+                ->with('astrologer')
+                ->latest()
+                ->take(3)
+                ->get();
+        } catch (\Throwable) {
+            $totalBookings    = 0;
+            $upcomingBookings = 0;
+            $recentBookings   = collect();
+        }
+
+        try {
+            $wishlistCount = DB::table('wishlists')
+                ->where('user_id', $user->id)
+                ->count();
+        } catch (\Throwable) {
+            $wishlistCount = 0;
+        }
 
         return view('user.dashboard', compact(
             'user',

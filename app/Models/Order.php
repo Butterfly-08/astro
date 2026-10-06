@@ -6,24 +6,59 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
     protected $fillable = [
+        'order_number',
         'user_id',
-        'customer_name',
-        'customer_email',
-        'customer_phone',
-        'shipping_address',
-        'status',
+        'coupon_code',
+        'coupon_discount',
         'subtotal',
-        'total',
+        'shipping_charge',
+        'tax_amount',
+        'total_amount',
+        'status',
+        'payment_method',
+        'payment_status',
+        'payment_id',
+        'shipping_name',
+        'shipping_phone',
+        'shipping_address_line1',
+        'shipping_address_line2',
+        'shipping_city',
+        'shipping_state',
+        'shipping_pincode',
+        'shipping_country',
+        'tracking_number',
+        'carrier_name',
+        'estimated_delivery',
+        'delivered_at',
+        'admin_notes',
     ];
 
     protected $casts = [
+        'coupon_discount' => 'float',
         'subtotal' => 'float',
-        'total'    => 'float',
+        'shipping_charge' => 'float',
+        'tax_amount' => 'float',
+        'total_amount' => 'float',
+        'estimated_delivery' => 'date',
+        'delivered_at' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Order $order) {
+            if (!$order->order_number) {
+                $order->order_number = 'ORD-'
+                    . now()->format('Ymd')
+                    . '-'
+                    . Str::upper(Str::random(8));
+            }
+        });
+    }
 
     // -------------------------------------------------------------------------
     // Relationships
@@ -111,6 +146,69 @@ class Order extends Model
                 'class' => 'secondary',
             ],
         };
+    }
+
+    public function getPaymentStatusBadgeAttribute(): array
+    {
+        return match ($this->payment_status) {
+            'unpaid' => [
+                'label' => 'Unpaid',
+                'class' => 'warning text-dark',
+            ],
+
+            'paid' => [
+                'label' => 'Paid',
+                'class' => 'success',
+            ],
+
+            'failed' => [
+                'label' => 'Failed',
+                'class' => 'danger',
+            ],
+
+            'refunded' => [
+                'label' => 'Refunded',
+                'class' => 'info text-dark',
+            ],
+
+            default => [
+                'label' => ucfirst($this->payment_status ?? 'Unknown'),
+                'class' => 'secondary',
+            ],
+        };
+    }
+
+    public function getTotalAttribute(): float
+    {
+        return (float) $this->total_amount;
+    }
+
+    public function getCustomerNameAttribute(): ?string
+    {
+        return $this->shipping_name;
+    }
+
+    public function getCustomerEmailAttribute(): ?string
+    {
+        return $this->user?->email;
+    }
+
+    public function getCustomerPhoneAttribute(): ?string
+    {
+        return $this->shipping_phone;
+    }
+
+    public function getShippingAddressAttribute(): string
+    {
+        return implode("\n", array_filter([
+            $this->shipping_address_line1,
+            $this->shipping_address_line2,
+            trim(implode(', ', array_filter([
+                $this->shipping_city,
+                $this->shipping_state,
+            ])) . ' - ' . $this->shipping_pincode),
+            $this->shipping_country,
+        ], static fn ($line) => $line !== null && $line !== ''));
     }
 
     // -------------------------------------------------------------------------

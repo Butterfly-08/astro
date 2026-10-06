@@ -73,66 +73,53 @@ class CheckoutController extends Controller
 
         $summary = $this->cart->summary();
 
-        $shippingAddress = $validated['shipping_address_line1'];
-
-        if (!empty($validated['shipping_address_line2'])) {
-            $shippingAddress .= "\n"
-                . $validated['shipping_address_line2'];
-        }
-
-        $shippingAddress .= "\n"
-            . $validated['shipping_city']
-            . ', '
-            . $validated['shipping_state']
-            . ' - '
-            . $validated['shipping_pincode'];
-
-        $shippingAddress .= "\n"
-            . ($validated['shipping_country'] ?? 'India');
-
         try {
             $order = DB::transaction(function () use (
                 $validated,
                 $cartItems,
                 $summary,
-                $user,
-                $shippingAddress
+                $user
             ) {
                 $order = Order::create([
                     'user_id' => $user->id,
-                    'customer_name' => $validated['shipping_name'],
-                    'customer_email' => $user->email,
-                    'customer_phone' => $validated['shipping_phone'],
-                    'shipping_address' => $shippingAddress,
-                    'status' => Order::STATUS_PENDING,
+                    'coupon_code' => $summary['coupon']['code'] ?? null,
+                    'coupon_discount' => $summary['discount'],
                     'subtotal' => $summary['subtotal'],
-                    'total' => $summary['total'],
+                    'shipping_charge' => $summary['shipping'],
+                    'total_amount' => $summary['total'],
+                    'payment_method' => $validated['payment_method'],
+                    'shipping_name' => $validated['shipping_name'],
+                    'shipping_phone' => $validated['shipping_phone'],
+                    'shipping_address_line1' => $validated['shipping_address_line1'],
+                    'shipping_address_line2' => $validated['shipping_address_line2'] ?? null,
+                    'shipping_city' => $validated['shipping_city'],
+                    'shipping_state' => $validated['shipping_state'],
+                    'shipping_pincode' => $validated['shipping_pincode'],
+                    'shipping_country' => $validated['shipping_country'] ?? 'India',
+                    'status' => Order::STATUS_PENDING,
                 ]);
 
                 foreach ($cartItems as $item) {
                     $product = $item->product;
 
-                    $productName = $product?->name ?? 'Product';
+                    if (!$product) {
+                        throw new \RuntimeException(
+                            'A product in the cart is no longer available.'
+                        );
+                    }
 
-                    $variantName = 'Standard';
-
-                    $price = (float) (
-                        $item->price
-                        ?? $product?->price
-                        ?? 0
-                    );
-
+                    $price = $product->effective_price;
                     $quantity = (int) $item->quantity;
-
                     $subtotal = $price * $quantity;
 
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'product_variant_id' => $item->product_variant_id,
-                        'product_name' => $productName,
-                        'variant_name' => $variantName,
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'product_sku' => $product->sku,
                         'quantity' => $quantity,
-                        'price' => $price,
+                        'unit_price' => $price,
+                        'original_price' => $product->price,
                         'subtotal' => $subtotal,
                     ]);
                 }
@@ -142,13 +129,11 @@ class CheckoutController extends Controller
                 return $order;
             });
         } catch (\Throwable $e) {
+            report($e);
+
             return redirect()
                 ->route('checkout.index')
-                ->with(
-                    'error',
-                    'Failed to place your order. Please try again. '
-                    . $e->getMessage()
-                );
+                ->with('error', 'Failed to place your order. Please try again.');
         }
 
         return redirect()
@@ -172,9 +157,7 @@ class CheckoutController extends Controller
                 ->route('login');
         }
 
-        $order = Order::with([
-            'items',
-        ])
+        $order = Order::with(['items', 'user'])
             ->where('id', $orderNumber)
             ->where('user_id', $user->id)
             ->firstOrFail();

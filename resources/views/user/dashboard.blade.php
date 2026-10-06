@@ -185,7 +185,7 @@
                                     @foreach($recentBookings as $rb)
                                         <tr>
                                             <td class="ps-3 fw-semibold text-dark">{{ $rb->astrologer->display_name }}</td>
-                                            <td>{{ $rb->booking_date->format('d M Y') }} &bull; {{ $rb->formatted_time_slot }}</td>
+                                            <td>{{ $rb->booking_date ? \Illuminate\Support\Carbon::parse($rb->booking_date)->format('d M Y') : 'N/A' }} &bull; {{ $rb->formatted_time_slot }}</td>
                                             <td class="text-capitalize">{{ $rb->consultation_type }}</td>
                                             <td>{!! $rb->status_badge !!}</td>
                                             <td class="pe-3 text-end">
@@ -221,7 +221,7 @@
                         </div>
                         <div class="col-sm-6 col-md-4">
                             <span class="text-muted small d-block">Date of Birth</span>
-                            <span class="fw-semibold">{{ $user->date_of_birth ? $user->date_of_birth->format('d M, Y') : 'Not provided' }}</span>
+                            <span class="fw-semibold">{{ $user->date_of_birth ? \Illuminate\Support\Carbon::parse($user->date_of_birth)->format('d M, Y') : 'Not provided' }}</span>
                         </div>
                         <div class="col-sm-6 col-md-4">
                             <span class="text-muted small d-block">Gender</span>

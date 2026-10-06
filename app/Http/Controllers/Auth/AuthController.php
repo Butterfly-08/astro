@@ -51,7 +51,7 @@ class AuthController extends Controller
             return redirect()->intended(route('user.dashboard'))
                 ->with(
                     'success',
-                    'Welcome back, ' . ($user->name ?? 'Customer') . '!'
+                    'Welcome back, ' . ($user->first_name ?? $user->full_name ?? 'Customer') . '!'
                 );
         }
 
@@ -82,24 +82,21 @@ class AuthController extends Controller
         $validated = $request->validated();
 
         /*
-         * The actual users table has only one name column.
-         *
-         * Registration form may collect first_name and last_name,
-         * so combine them into the existing name column.
-         */
-        $firstName = trim($validated['first_name'] ?? '');
-        $lastName = trim($validated['last_name'] ?? '');
-
-        $fullName = trim($firstName . ' ' . $lastName);
-
-        /*
-         * Create user using only columns that actually exist
-         * in the current users table.
+         * Create user using the actual columns in the users table.
+         * first_name is required (NOT NULL, no default).
+         * Pass all optional fields only if they were provided.
          */
         $user = User::create([
-            'name' => $fullName,
-            'email' => strtolower($validated['email']),
-            'password' => Hash::make($validated['password']),
+            'first_name'    => $validated['first_name'],
+            'last_name'     => $validated['last_name'] ?? null,
+            'email'         => strtolower($validated['email']),
+            'phone'         => $validated['phone'] ?? null,
+            'password'      => Hash::make($validated['password']),
+            'date_of_birth' => $validated['date_of_birth'] ?? null,
+            'gender'        => $validated['gender'] ?? null,
+            'city'          => $validated['city'] ?? null,
+            'state'         => $validated['state'] ?? null,
+            'country'       => $validated['country'] ?? 'India',
         ]);
 
         /*

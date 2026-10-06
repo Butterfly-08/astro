@@ -9,25 +9,42 @@ class OrderItem extends Model
 {
     protected $fillable = [
         'order_id',
-        'product_variant_id',
+        'product_id',
         'product_name',
-        'variant_name',
+        'product_sku',
         'quantity',
-        'price',
+        'unit_price',
+        'original_price',
         'subtotal',
     ];
 
     protected $casts = [
-        'order_id'           => 'integer',
-        'product_variant_id' => 'integer',
-        'quantity'           => 'integer',
-        'price'              => 'float',
-        'subtotal'           => 'float',
+        'order_id' => 'integer',
+        'product_id' => 'integer',
+        'quantity' => 'integer',
+        'unit_price' => 'float',
+        'original_price' => 'float',
+        'subtotal' => 'float',
     ];
 
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function getPriceAttribute(): float
+    {
+        return (float) $this->unit_price;
+    }
+
+    public function getVariantNameAttribute(): ?string
+    {
+        return null;
     }
 
     public function getIsDiscountedAttribute(): bool
