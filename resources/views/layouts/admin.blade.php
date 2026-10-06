@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Dashboard') — AstroVani Control Panel</title>
+    <link rel="stylesheet" href="{{ asset('css/page-loader.css') }}">
+    <script src="{{ asset('js/page-loader.js') }}"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -241,6 +243,8 @@
     @stack('styles')
 </head>
 <body>
+    <x-page-loader />
+
     <!-- Live Background Wallpaper Video & Constellation FX -->
     <x-live-wallpaper />
 

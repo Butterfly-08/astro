@@ -1,0 +1,34 @@
+#page-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #1A0B2E;
+}
+
+html.page-loading #page-loader {
+    display: flex;
+}
+
+.page-loader-spinner {
+    width: 54px;
+    height: 54px;
+    border: 4px solid rgba(245, 176, 65, 0.25);
+    border-top-color: #F5B041;
+    border-radius: 50%;
+    animation: page-loader-spin 0.8s linear infinite;
+}
+
+@keyframes page-loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-loader-spinner {
+        animation-duration: 1.8s;
+    }
+}

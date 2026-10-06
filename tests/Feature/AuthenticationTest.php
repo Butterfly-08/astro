@@ -21,6 +21,12 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('AstroVani');
         $response->assertSee('Guidance for Your Journey');
+        $response->assertSee('id="website-language"', false);
+        $response->assertSee('value="hi"', false);
+        $response->assertSee('<span class="notranslate" translate="no">AstroVani</span>', false);
+        $response->assertSee('id="page-loader"', false);
+        $response->assertSee('css/page-loader.css');
+        $response->assertSee('js/page-loader.js');
     }
 
     /**
@@ -31,6 +37,7 @@ class AuthenticationTest extends TestCase
         $response = $this->get('/register');
         $response->assertStatus(200);
         $response->assertSee('Join AstroVani');
+        $response->assertSee('id="page-loader"', false);
     }
 
     /**
@@ -205,6 +212,7 @@ class AuthenticationTest extends TestCase
         $dashboardResponse = $this->get('/admin/dashboard');
         $dashboardResponse->assertStatus(200);
         $dashboardResponse->assertSee('Master Administration Dashboard');
+        $dashboardResponse->assertSee('id="page-loader"', false);
     }
 
     /**

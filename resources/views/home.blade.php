@@ -137,7 +137,7 @@
                     <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3 shadow" style="width: 100px; height: 100px; background: linear-gradient(135deg, #F5B041 0%, #D4AC0D 100%); color: #1A0B2E;">
                         <i class="bi bi-brightness-high-fill display-5"></i>
                     </div>
-                    <h4 class="text-white fw-bold mb-2">Welcome to AstroVani</h4>
+                    <h4 class="text-white fw-bold mb-2">Welcome to <span class="notranslate" translate="no">AstroVani</span></h4>
                     <p class="text-white-50 small mb-4">
                         Vedic Astrology • Kundli Reading • Tarot Cards • Vastu Shastra • Certified Gemstones & Remedies
                     </p>
@@ -319,7 +319,7 @@
     <div class="container py-3">
         <div class="text-center mb-5">
             <span class="badge bg-warning bg-opacity-10 text-dark border border-warning px-3 py-1 mb-2">Authentic Spiritual Services</span>
-            <h2 class="fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Why Choose AstroVani?</h2>
+            <h2 class="fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">Why Choose <span class="notranslate" translate="no">AstroVani</span>?</h2>
             <p class="text-muted mx-auto" style="max-width: 600px;">
                 Experience genuine Vedic consultations paired with ethically sourced, lab-certified astrology remedies.
             </p>

@@ -6,6 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'AstroVani — Premier Astrology Consultation & Spiritual E-Commerce')</title>
     <meta name="description" content="@yield('meta_description', 'Connect with verified Vedic astrologers, tarot readers, numerologists, and shop genuine spiritual products on AstroVani.')">
+    <link rel="stylesheet" href="{{ asset('css/page-loader.css') }}">
+    <script src="{{ asset('js/page-loader.js') }}"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -220,6 +222,8 @@
 </head>
 
 <body>
+    <x-page-loader />
+
     <!-- Live Background Wallpaper Video & Celestial Constellation FX -->
     <x-live-wallpaper />
 
@@ -248,7 +252,7 @@
                 </a>
 
                 <span class="text-white-50">
-                    Support: support@astrovani.test
+                    Support: <span class="notranslate" translate="no">support@astrovani.test</span>
                 </span>
             </div>
 
@@ -265,7 +269,7 @@
             <a class="astro-logo" href="{{ route('home') }}">
                 <div>
                     <i class="bi bi-sun-fill logo-star"></i>
-                    <span>AstroVani</span>
+                    <span class="notranslate" translate="no">AstroVani</span>
                     <span class="tagline">Guidance & Spiritual Shop</span>
                 </div>
             </a>
@@ -552,13 +556,13 @@
                         <i class="bi bi-sun-fill logo-star"></i>
 
                         <span class="text-white">
-                            AstroVani
+                            <span class="notranslate" translate="no">AstroVani</span>
                         </span>
 
                     </div>
 
                     <p class="text-white-50 small mb-3">
-                        AstroVani is an authentic digital sanctuary bringing ancient Vedic wisdom into modern life. Connect with experienced, verified astrologers and discover genuine, sacred remedies for personal growth and harmony.
+                        <span class="notranslate" translate="no">AstroVani</span> is an authentic digital sanctuary bringing ancient Vedic wisdom into modern life. Connect with experienced, verified astrologers and discover genuine, sacred remedies for personal growth and harmony.
                     </p>
 
                     <div class="d-flex gap-3 text-white-50">
@@ -673,7 +677,7 @@
                     <p class="text-white-50"
                        style="font-size: 0.78rem; line-height: 1.5;">
 
-                        Astrology readings and spiritual insights provided on AstroVani are based on Vedic and symbolic traditions. They are meant for guidance and self-discovery and do not constitute professional medical, legal, or financial advice. We do not make supernatural guarantees.
+                        Astrology readings and spiritual insights provided on <span class="notranslate" translate="no">AstroVani</span> are based on Vedic and symbolic traditions. They are meant for guidance and self-discovery and do not constitute professional medical, legal, or financial advice. We do not make supernatural guarantees.
 
                     </p>
 
@@ -696,13 +700,13 @@
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-white-50">
 
                 <div>
-                    &copy; {{ date('Y') }} AstroVani Platform. All rights reserved.
+                    &copy; {{ date('Y') }} <span class="notranslate" translate="no">AstroVani</span> Platform. All rights reserved.
                 </div>
 
                 <div class="mt-2 mt-md-0">
 
                     <span class="me-3">
-                        Crafted with Laravel 13 & Bootstrap 5
+                        Crafted with <span class="notranslate" translate="no">Laravel 13</span> &amp; <span class="notranslate" translate="no">Bootstrap 5</span>
                     </span>
 
                 </div>
@@ -718,24 +722,47 @@
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const websiteLanguages = ['en', 'hi', 'ta', 'te', 'bn', 'mr', 'gu', 'pa'];
+
+        function selectedWebsiteLanguage() {
+            const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([a-z]{2})(?:;|$)/i);
+            return match && websiteLanguages.includes(match[1]) ? match[1] : 'en';
+        }
+
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
                 includedLanguages: 'en,hi,ta,te,bn,mr,gu,pa',
                 autoDisplay: false
             }, 'google_translate_element');
+
+            const languageSelect = document.getElementById('website-language');
+            if (languageSelect) {
+                languageSelect.value = selectedWebsiteLanguage();
+            }
         }
 
         function changeWebsiteLanguage(language) {
+            if (!websiteLanguages.includes(language)) {
+                return;
+            }
+
             const translationSelect = document.querySelector('.goog-te-combo');
+            const languageSelect = document.getElementById('website-language');
 
             if (language === 'en') {
                 document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                if (languageSelect) {
+                    languageSelect.value = 'en';
+                }
                 window.location.reload();
                 return;
             }
 
             document.cookie = `googtrans=/en/${language}; path=/;`;
+            if (languageSelect) {
+                languageSelect.value = language;
+            }
 
             if (translationSelect) {
                 translationSelect.value = language;
@@ -743,6 +770,11 @@
             } else {
                 window.location.reload();
             }
+        }
+
+        const websiteLanguageSelect = document.getElementById('website-language');
+        if (websiteLanguageSelect) {
+            websiteLanguageSelect.value = selectedWebsiteLanguage();
         }
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
