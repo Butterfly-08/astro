@@ -343,6 +343,52 @@
                     </a>
                 </div>
 
+                <div class="sidebar-header">Referral & Commissions</div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.commissions.index') }}" class="nav-link-custom {{ request()->routeIs('admin.commissions.*') ? 'active' : '' }}">
+                        <i class="bi bi-percent"></i>
+                        <span>Commissions</span>
+                        @php $pendingCommCount = \Illuminate\Support\Facades\Schema::hasTable('commissions') ? \App\Models\Commission::where('status', 'pending')->count() : 0; @endphp
+                        @if($pendingCommCount > 0)
+                            <span class="badge bg-warning text-dark ms-auto" style="font-size:0.65rem;">{{ $pendingCommCount }}</span>
+                        @endif
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.withdrawals.index') }}" class="nav-link-custom {{ request()->routeIs('admin.withdrawals.*') ? 'active' : '' }}">
+                        <i class="bi bi-cash-stack"></i>
+                        <span>Withdrawals</span>
+                        @php $pendingWithCount = \Illuminate\Support\Facades\Schema::hasTable('withdrawals') ? \App\Models\Withdrawal::whereIn('status', ['pending', 'under_review', 'approved'])->count() : 0; @endphp
+                        @if($pendingWithCount > 0)
+                            <span class="badge bg-danger ms-auto" style="font-size:0.65rem;">{{ $pendingWithCount }}</span>
+                        @endif
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.wallets.index') }}" class="nav-link-custom {{ request()->routeIs('admin.wallets.*') ? 'active' : '' }}">
+                        <i class="bi bi-wallet2"></i>
+                        <span>Wallets & Ledger</span>
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.referrals.partners') }}" class="nav-link-custom {{ request()->routeIs('admin.referrals.partners') ? 'active' : '' }}">
+                        <i class="bi bi-person-badge"></i>
+                        <span>Referral Partners</span>
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.referrals.index') }}" class="nav-link-custom {{ request()->routeIs('admin.referrals.index') ? 'active' : '' }}">
+                        <i class="bi bi-cursor-fill"></i>
+                        <span>Referral Clicks</span>
+                    </a>
+                </div>
+                <div class="nav-item-custom">
+                    <a href="{{ route('admin.settings.index') }}" class="nav-link-custom {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                        <i class="bi bi-sliders"></i>
+                        <span>Referral Settings</span>
+                    </a>
+                </div>
+
                 <div class="sidebar-header">Content & Settings</div>
                 <div class="nav-item-custom">
                     <a href="#blogs" class="nav-link-custom">

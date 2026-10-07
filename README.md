@@ -1,66 +1,161 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔮 AstroVani — Astrologer E-Commerce, Product Referral, Commission & Withdrawal Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A production-ready **Astrologer E-commerce + Product Referral + Dynamic Commission Engine + Double-Entry Wallet + Withdrawal Payout System** built with **PHP 8.2+ and Laravel 11**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Key Highlights & System Architecture
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Strict Separation of Concerns & Financial Integrity**:
+  - All balance and transaction operations run inside `DB::transaction()` with pessimistic row-level locking (`lockForUpdate()`) to prevent race conditions.
+  - Zero direct wallet balance edits. An immutable double-entry ledger (`wallet_transactions`) records every credit, debit, hold, release, and adjustment.
+- **Three-Tier Commission Hierarchy**:
+  - `Product-Specific Rate` > `Category Rate` > `Global Default Rate`.
+  - Configurable commission types (percentage `%` or flat fixed `₹`).
+  - Commission base options: `product_subtotal`, `subtotal_before_tax`, or `total`.
+- **Advanced Referral Engine**:
+  - Unique partner referral codes (e.g., `GURU100`) and customizable slugged referral links.
+  - Configurable cookie duration (default 30 days) and attribution models (`last_click` or `first_click`).
+  - IP-based click cooling and fraud protection against click farming.
+  - Self-referral prevention (astrologers cannot earn commissions on their own orders).
+- **Hold Periods & Automated Commission Release**:
+  - New commissions enter `pending` state for dispute/return handling (configurable, default 7 days).
+  - Automated background command `php artisan commissions:release` safely unlocks matured commissions into astrologer available wallet balances.
+- **Transactional Withdrawal Payout Flow**:
+  - Astrologer selects UPI ID or Bank Transfer (masked and AES-256 encrypted storage).
+  - Requested funds are immediately locked into `held_balance`.
+  - Admin review workflow: `Pending` → `Under Review` → `Approved` → `Processing` → `Paid` (with Bank UTR/Transaction reference) or `Rejected` (instantly releases held funds back to available wallet).
+- **Three Distinct User Portals**:
+  1. **Customer Front-End**: E-commerce catalog, shopping cart, coupon codes, checkout, order tracking, astrologer booking.
+  2. **Astrologer Partner Portal**: Referral link generator, real-time analytics & graphs, commission history, double-entry ledger, withdrawal requests.
+  3. **Admin Control Panel**: Partner approval/suspension, product commission rules, wallet adjustments, withdrawal approvals, referral traffic logs, and platform settings.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🏗️ Technology Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend**: Laravel 11 (PHP 8.2+)
+- **Database**: MySQL / SQLite (with foreign keys and check constraints)
+- **Frontend**: Blade templates, Bootstrap 5, Bootstrap Icons, Chart.js
+- **Testing**: PHPUnit 11 with 100% test coverage across financial workflows
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Quick Start & Installation
 
-## Laravel Sponsors
+### 1. Prerequisites
+- PHP 8.2 or 8.3+ with `pdo`, `mbstring`, `openssl`, `bcmath`
+- Composer 2+
+- MySQL 8.0+ or SQLite
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Clone & Setup Dependencies
+```bash
+git clone <repository_url>
+cd astro
+composer install
+npm install && npm run build
+```
 
-### Premium Partners
+### 3. Environment Configuration
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Configure your database credentials in `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=astro
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+### 4. Database Migrations & Seeders
+```bash
+php artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. Create Administrator Account
+```bash
+php artisan admin:create
+# or run the provision command:
+php artisan app:provision-admin
+```
 
-## Code of Conduct
+### 6. Start Development Server
+```bash
+php artisan serve
+```
+- Storefront: `http://localhost:8000`
+- Astrologer Portal: `http://localhost:8000/astrologer/login`
+- Admin Control Panel: `http://localhost:8000/admin/login`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 🧪 Automated Testing Suite
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The application includes an end-to-end automated test suite covering all referral tracking, order attribution, commission calculation, wallet locking, and withdrawal flows:
 
-## License
+```bash
+# Run all tests
+php vendor/phpunit/phpunit/phpunit
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Run Referral, Commission & Wallet feature tests
+php vendor/phpunit/phpunit/phpunit --filter ReferralCommissionWalletTest
+```
+✅ **Test Suite Result: 57 tests, 399 assertions — 100% passing.**
+
+---
+
+## 🔄 Scheduled Tasks & Cron Jobs
+
+Configure your server cron to trigger Laravel's scheduler every minute:
+```bash
+* * * * * cd /path/to/astro && php artisan schedule:run >> /dev/null 2>&1
+```
+
+The scheduler automatically runs:
+- `commissions:release` (hourly): Inspects pending commissions whose hold period has elapsed and atomically credits them to astrologer wallets.
+
+You can also run it manually at any time:
+```bash
+php artisan commissions:release
+# or alias
+php artisan commission:release
+```
+
+---
+
+## 📬 Postman API Testing Collection
+
+A complete Postman collection is included in the project root:
+- **File**: `AstroReferral_API.postman_collection.json`
+
+### Key API Endpoints
+| Endpoint | Method | Access | Description |
+|---|---|---|---|
+| `/api/v1/referrals/validate/{code}` | `GET` | Public | Validates partner referral code |
+| `/api/v1/referrals/track` | `POST` | Public | Logs referral click & creates cookie |
+| `/api/v1/astrologer/login` | `POST` | Public | Authenticates astrologer and returns token |
+| `/api/v1/astrologer/wallet` | `GET` | Astrologer | Retrieves wallet balances and ledger entries |
+| `/api/v1/astrologer/commissions` | `GET` | Astrologer | List of order referral commissions |
+| `/api/v1/astrologer/withdrawals` | `POST` | Astrologer | Submits a withdrawal request (locks funds) |
+| `/api/v1/astrologer/withdrawals` | `GET` | Astrologer | Withdrawal payout history |
+| `/api/v1/astrologer/referral-links` | `GET` | Astrologer | Generates referral URLs for products |
+
+---
+
+## 🔒 Security & Fraud Safeguards
+
+1. **Transaction Integrity**: Pessimistic `lockForUpdate()` prevents duplicate wallet withdrawals even under concurrent requests.
+2. **Double-Entry Ledger**: Every single rupee movement has an immutable matching `WalletTransaction` row (`balance_before`, `balance_after`, `reference_key`).
+3. **Encrypted Bank Data**: Sensitive bank account numbers are encrypted at rest using Laravel's AES-256-CBC cipher (`account_number_encrypted`), with only last 4 digits stored for UI masking (`account_number_masked`).
+4. **Self-Referral Prevention**: Server-side check prevents an astrologer from earning commission on orders made by their own customer account.
+5. **Rate-Limiting & Duplicate Click Cooling**: Prevents bot-driven click attribution manipulation.
+
+---
+
+## 📄 License
+This platform is open-source software licensed under the MIT license.

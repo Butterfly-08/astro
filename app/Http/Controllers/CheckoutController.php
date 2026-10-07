@@ -14,7 +14,9 @@ use Illuminate\View\View;
 class CheckoutController extends Controller
 {
     public function __construct(
-        protected CartService $cart
+        protected CartService $cart,
+        protected \App\Services\ReferralService $referralService,
+        protected \App\Services\CommissionService $commissionService
     ) {}
 
     public function index(): View|RedirectResponse
@@ -78,8 +80,12 @@ class CheckoutController extends Controller
                 $validated,
                 $cartItems,
                 $summary,
-                $user
+                $user,
+                $request
             ) {
+                // Check for referral attribution
+                $referral = $this->referralService->findClickedReferral($request, $user->id);
+
                 $order = Order::create([
                     'user_id' => $user->id,
                     'coupon_code' => $summary['coupon']['code'] ?? null,
@@ -97,6 +103,9 @@ class CheckoutController extends Controller
                     'shipping_pincode' => $validated['shipping_pincode'],
                     'shipping_country' => $validated['shipping_country'] ?? 'India',
                     'status' => Order::STATUS_PENDING,
+                    'referral_code' => $referral?->referral_code,
+                    'referrer_astrologer_id' => $referral?->astrologer_id,
+                    'commission_status' => $referral ? 'pending' : 'none',
                 ]);
 
                 foreach ($cartItems as $item) {
@@ -122,6 +131,12 @@ class CheckoutController extends Controller
                         'original_price' => $product->price,
                         'subtotal' => $subtotal,
                     ]);
+                }
+
+                // If referral exists, create pending commissions
+                if ($referral) {
+                    $this->commissionService->createForOrder($order, $referral);
+                    $this->referralService->clearAttribution($request);
                 }
 
                 $this->cart->clear();

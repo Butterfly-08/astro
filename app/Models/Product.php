@@ -28,16 +28,23 @@ class Product extends Model
         'is_featured',
         'rating_avg',
         'total_reviews',
+        'referral_enabled',
+        'commission_type',
+        'commission_value',
+        'commission_cap',
     ];
 
     protected $casts = [
-        'price'         => 'decimal:2',
-        'sale_price'    => 'decimal:2',
-        'stock'         => 'integer',
-        'gallery'       => 'array',
-        'is_featured'   => 'boolean',
-        'rating_avg'    => 'decimal:2',
-        'total_reviews' => 'integer',
+        'price'            => 'decimal:2',
+        'sale_price'       => 'decimal:2',
+        'stock'            => 'integer',
+        'gallery'          => 'array',
+        'is_featured'      => 'boolean',
+        'rating_avg'       => 'decimal:2',
+        'total_reviews'    => 'integer',
+        'referral_enabled' => 'boolean',
+        'commission_value' => 'decimal:2',
+        'commission_cap'   => 'decimal:2',
     ];
 
     /*
@@ -49,6 +56,16 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function referrals(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Referral::class);
+    }
+
+    public function commissions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Commission::class);
     }
 
     /*

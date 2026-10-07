@@ -44,5 +44,8 @@ class DatabaseSeeder extends Seeder
         // Phase 4: E-Commerce Product Categories & Products
         $this->call(ProductCategorySeeder::class);
         $this->call(ProductSeeder::class);
+
+        // Phase 5: Referral, Commission & Wallet System
+        $this->call(ReferralSystemSeeder::class);
     }
 }

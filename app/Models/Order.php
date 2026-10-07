@@ -36,6 +36,9 @@ class Order extends Model
         'estimated_delivery',
         'delivered_at',
         'admin_notes',
+        'referral_code',
+        'referrer_astrologer_id',
+        'commission_status',
     ];
 
     protected $casts = [
@@ -72,6 +75,16 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function referrerAstrologer(): BelongsTo
+    {
+        return $this->belongsTo(Astrologer::class, 'referrer_astrologer_id');
+    }
+
+    public function commissions(): HasMany
+    {
+        return $this->hasMany(Commission::class);
     }
 
     // -------------------------------------------------------------------------

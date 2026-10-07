@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
  * @property int $id
+ * @property string $role
  * @property string $full_name
  */
 class User extends Authenticatable
@@ -16,6 +17,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'role',
         'first_name',
         'last_name',
         'email',
@@ -67,7 +69,22 @@ class User extends Authenticatable
      */
     public function isActive(): bool
     {
-        return true;
+        return $this->status === 'active';
+    }
+
+    public function isAstrologer(): bool
+    {
+        return $this->role === 'astrologer';
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->role === 'customer';
+    }
+
+    public function astrologer(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Astrologer::class);
     }
 
     public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany

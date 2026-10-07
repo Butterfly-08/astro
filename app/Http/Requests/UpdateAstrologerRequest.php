@@ -27,6 +27,7 @@ class UpdateAstrologerRequest extends FormRequest
             'languages'       => 'nullable|string|max:300',
             'experience_years'=> 'required|integer|min:0|max:99',
             'education'       => 'nullable|string|max:300',
+            'referral_code'   => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+$/', 'unique:astrologers,referral_code,' . $astrologerId],
             'chat_rate'       => 'required|numeric|min:0|max:9999',
             'call_rate'       => 'required|numeric|min:0|max:9999',
             'video_rate'      => 'required|numeric|min:0|max:9999',
@@ -46,9 +47,17 @@ class UpdateAstrologerRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->merge([
+        $data = [
             'is_featured'  => $this->boolean('is_featured'),
             'is_available' => $this->boolean('is_available'),
-        ]);
+        ];
+
+        if ($this->has('referral_code')) {
+            $data['referral_code'] = $this->filled('referral_code')
+                ? strtoupper(trim($this->input('referral_code')))
+                : null;
+        }
+
+        $this->merge($data);
     }
 }

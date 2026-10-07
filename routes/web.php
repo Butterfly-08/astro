@@ -21,6 +21,20 @@ use App\Http\Controllers\User\BookingController as UserBookingController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\WishlistController as UserWishlistController;
+use App\Http\Controllers\Admin\CommissionController as AdminCommissionController;
+use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
+use App\Http\Controllers\Admin\WalletController as AdminWalletController;
+use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\ReferralController as AdminReferralController;
+use App\Http\Controllers\ReferralLandingController;
+use App\Http\Controllers\Astrologer\AstrologerAuthController;
+use App\Http\Controllers\Astrologer\AstrologerDashboardController;
+use App\Http\Controllers\Astrologer\AstrologerReferralController;
+use App\Http\Controllers\Astrologer\AstrologerCommissionController;
+use App\Http\Controllers\Astrologer\AstrologerWalletController;
+use App\Http\Controllers\Astrologer\AstrologerWithdrawalController;
+use App\Http\Controllers\Astrologer\AstrologerAnalyticsController;
+use App\Http\Controllers\Astrologer\AstrologerProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,7 +56,6 @@ Route::prefix('astrologers')->name('astrologers.')->group(function () {
     Route::get('/', [AstrologerController::class, 'index'])->name('index');
     Route::get('/{slug}', [AstrologerController::class, 'show'])->name('show');
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -505,5 +518,103 @@ Route::prefix('admin')->group(function () {
                 Route::put('/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])
                     ->name('update-payment-status');
             });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Commission Management
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('commissions')->name('admin.commissions.')->group(function () {
+            Route::get('/', [AdminCommissionController::class, 'index'])->name('index');
+            Route::get('/{commission}', [AdminCommissionController::class, 'show'])->name('show');
+            Route::post('/{commission}/approve', [AdminCommissionController::class, 'approve'])->name('approve');
+            Route::post('/{commission}/reject', [AdminCommissionController::class, 'reject'])->name('reject');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Withdrawal Management
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('withdrawals')->name('admin.withdrawals.')->group(function () {
+            Route::get('/', [AdminWithdrawalController::class, 'index'])->name('index');
+            Route::get('/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('show');
+            Route::post('/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('approve');
+            Route::post('/{withdrawal}/processing', [AdminWithdrawalController::class, 'markProcessing'])->name('processing');
+            Route::post('/{withdrawal}/paid', [AdminWithdrawalController::class, 'markPaid'])->name('mark-paid');
+            Route::post('/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('reject');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Astrologer Wallet & Ledger Management
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('wallets')->name('admin.wallets.')->group(function () {
+            Route::get('/', [AdminWalletController::class, 'index'])->name('index');
+            Route::get('/transactions', [AdminWalletController::class, 'transactions'])->name('transactions');
+            Route::post('/{wallet}/adjust', [AdminWalletController::class, 'adjust'])->name('adjust');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Referral Program Settings
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('referral-settings')->name('admin.settings.')->group(function () {
+            Route::get('/', [AdminSettingsController::class, 'index'])->name('index');
+            Route::post('/', [AdminSettingsController::class, 'update'])->name('update');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Referral Clicks & Partner Approval
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('referrals')->name('admin.referrals.')->group(function () {
+            Route::get('/', [AdminReferralController::class, 'index'])->name('index');
+            Route::get('/partners', [AdminReferralController::class, 'partners'])->name('partners');
+            Route::post('/partners/{astrologer}/status', [AdminReferralController::class, 'updatePartnerStatus'])->name('partners.update-status');
+        });
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Public Referral Landing Route
+|--------------------------------------------------------------------------
+*/
+Route::get('/ref/{code}', [ReferralLandingController::class, 'handle'])->name('referral.landing');
+
+/*
+|--------------------------------------------------------------------------
+| Astrologer Partner Portal Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('astrologer')->name('astrologer.')->group(function () {
+    // Guest / Application routes
+    Route::get('/login', [AstrologerAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AstrologerAuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AstrologerAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AstrologerAuthController::class, 'register'])->name('register.post');
+    Route::post('/logout', [AstrologerAuthController::class, 'logout'])->name('logout');
+    Route::get('/pending', [AstrologerAuthController::class, 'pending'])->name('pending');
+    Route::get('/suspended', [AstrologerAuthController::class, 'suspended'])->name('suspended');
+
+    // Authenticated and Approved Astrologer routes
+    Route::middleware(['auth:web', 'approved.astrologer'])->group(function () {
+        Route::get('/dashboard', [AstrologerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/referrals', [AstrologerReferralController::class, 'index'])->name('referrals.index');
+        Route::get('/referrals/qr', [AstrologerReferralController::class, 'qrCode'])->name('referrals.qr');
+        Route::get('/commissions', [AstrologerCommissionController::class, 'index'])->name('commissions.index');
+        Route::get('/commissions/{commission}', [AstrologerCommissionController::class, 'show'])->name('commissions.show');
+        Route::get('/wallet', [AstrologerWalletController::class, 'index'])->name('wallet.index');
+        Route::get('/withdrawals', [AstrologerWithdrawalController::class, 'index'])->name('withdrawals.index');
+        Route::post('/withdrawals', [AstrologerWithdrawalController::class, 'store'])->name('withdrawals.store');
+        Route::post('/withdrawals/{withdrawal}/cancel', [AstrologerWithdrawalController::class, 'cancel'])->name('withdrawals.cancel');
+        Route::get('/analytics', [AstrologerAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/profile', [AstrologerProfileController::class, 'index'])->name('profile.index');
+        Route::post('/profile', [AstrologerProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/password', [AstrologerProfileController::class, 'updatePassword'])->name('profile.password');
     });
 });

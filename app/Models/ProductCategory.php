@@ -23,11 +23,14 @@ class ProductCategory extends Model
         'status',
         'sort_order',
         'is_featured',
+        'commission_type',
+        'commission_value',
     ];
 
     protected $casts = [
-        'sort_order'  => 'integer',
-        'is_featured' => 'boolean',
+        'sort_order'       => 'integer',
+        'is_featured'      => 'boolean',
+        'commission_value' => 'decimal:2',
     ];
 
     // -------------------------------------------------------------------------

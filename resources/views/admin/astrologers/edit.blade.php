@@ -154,6 +154,18 @@
                 </div>
             </div>
 
+            {{-- Referral --}}
+            <div class="form-section">
+                <div class="form-section-title"><i class="bi bi-link-45deg me-2"></i>Referral</div>
+                <label for="referral_code" class="form-label fw-semibold small">Referral Code</label>
+                <input type="text" name="referral_code" id="referral_code" maxlength="20"
+                       class="form-control @error('referral_code') is-invalid @enderror"
+                       value="{{ old('referral_code', $astrologer->referral_code) }}"
+                       placeholder="e.g. ASTRO7F92">
+                <div class="form-text">Must be unique. Referral links using this code will change if you edit it.</div>
+                @error('referral_code')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
             {{-- Rates --}}
             <div class="form-section">
                 <div class="form-section-title"><i class="bi bi-currency-rupee me-2"></i>Consultation Rates (₹/min)</div>
@@ -187,6 +199,8 @@
                         </div>
                     @endforeach
                 </div>
+            </div>
+
             {{-- Availability Schedule --}}
             <div class="form-section">
                 <div class="d-flex justify-content-between align-items-center mb-3">

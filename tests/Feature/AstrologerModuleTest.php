@@ -170,6 +170,126 @@ class AstrologerModuleTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_edit_astrologer_referral_code(): void
+    {
+        $astrologer = Astrologer::create([
+            'display_name' => 'Referral Astrologer',
+            'email' => 'referral@example.com',
+            'slug' => 'referral-astrologer',
+            'experience_years' => 5,
+            'chat_rate' => 15.00,
+            'call_rate' => 25.00,
+            'video_rate' => 35.00,
+            'status' => 'active',
+            'referral_code' => 'OLD123',
+        ]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.astrologers.edit', $astrologer))
+            ->assertOk()
+            ->assertSee('name="referral_code"', false)
+            ->assertSee('value="OLD123"', false);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->put(route('admin.astrologers.update', $astrologer), [
+                'display_name' => $astrologer->display_name,
+                'email' => $astrologer->email,
+                'experience_years' => $astrologer->experience_years,
+                'chat_rate' => $astrologer->chat_rate,
+                'call_rate' => $astrologer->call_rate,
+                'video_rate' => $astrologer->video_rate,
+                'status' => $astrologer->status,
+                'referral_code' => ' new456 ',
+            ]);
+
+        $response->assertRedirect(route('admin.astrologers.show', $astrologer));
+        $this->assertDatabaseHas('astrologers', [
+            'id' => $astrologer->id,
+            'referral_code' => 'NEW456',
+        ]);
+    }
+
+    public function test_admin_cannot_assign_an_existing_referral_code(): void
+    {
+        $astrologer = Astrologer::create([
+            'display_name' => 'First Astrologer',
+            'email' => 'first-referral@example.com',
+            'slug' => 'first-referral',
+            'experience_years' => 5,
+            'chat_rate' => 15.00,
+            'call_rate' => 25.00,
+            'video_rate' => 35.00,
+            'status' => 'active',
+            'referral_code' => 'SHARED123',
+        ]);
+        $otherAstrologer = Astrologer::create([
+            'display_name' => 'Second Astrologer',
+            'email' => 'second-referral@example.com',
+            'slug' => 'second-referral',
+            'experience_years' => 5,
+            'chat_rate' => 15.00,
+            'call_rate' => 25.00,
+            'video_rate' => 35.00,
+            'status' => 'active',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->from(route('admin.astrologers.edit', $otherAstrologer))
+            ->put(route('admin.astrologers.update', $otherAstrologer), [
+                'display_name' => $otherAstrologer->display_name,
+                'email' => $otherAstrologer->email,
+                'experience_years' => $otherAstrologer->experience_years,
+                'chat_rate' => $otherAstrologer->chat_rate,
+                'call_rate' => $otherAstrologer->call_rate,
+                'video_rate' => $otherAstrologer->video_rate,
+                'status' => $otherAstrologer->status,
+                'referral_code' => 'shared123',
+            ]);
+
+        $response->assertSessionHasErrors('referral_code');
+        $this->assertDatabaseHas('astrologers', [
+            'id' => $astrologer->id,
+            'referral_code' => 'SHARED123',
+        ]);
+        $this->assertDatabaseHas('astrologers', [
+            'id' => $otherAstrologer->id,
+            'referral_code' => null,
+        ]);
+    }
+
+    public function test_admin_cannot_assign_a_referral_code_with_spaces_or_symbols(): void
+    {
+        $astrologer = Astrologer::create([
+            'display_name' => 'Invalid Referral',
+            'email' => 'invalid-referral@example.com',
+            'slug' => 'invalid-referral',
+            'experience_years' => 5,
+            'chat_rate' => 15.00,
+            'call_rate' => 25.00,
+            'video_rate' => 35.00,
+            'status' => 'active',
+        ]);
+
+        $response = $this->actingAs($this->admin, 'admin')
+            ->from(route('admin.astrologers.edit', $astrologer))
+            ->put(route('admin.astrologers.update', $astrologer), [
+                'display_name' => $astrologer->display_name,
+                'email' => $astrologer->email,
+                'experience_years' => $astrologer->experience_years,
+                'chat_rate' => $astrologer->chat_rate,
+                'call_rate' => $astrologer->call_rate,
+                'video_rate' => $astrologer->video_rate,
+                'status' => $astrologer->status,
+                'referral_code' => 'BAD CODE!',
+            ]);
+
+        $response->assertSessionHasErrors('referral_code');
+        $this->assertDatabaseHas('astrologers', [
+            'id' => $astrologer->id,
+            'referral_code' => null,
+        ]);
+    }
+
     public function test_admin_can_approve_pending_astrologer(): void
     {
         $astrologer = Astrologer::create([

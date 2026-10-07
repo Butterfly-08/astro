@@ -16,15 +16,20 @@ class OrderItem extends Model
         'unit_price',
         'original_price',
         'subtotal',
+        'commission_type',
+        'commission_value',
+        'commission_amount',
     ];
 
     protected $casts = [
-        'order_id' => 'integer',
-        'product_id' => 'integer',
-        'quantity' => 'integer',
-        'unit_price' => 'float',
-        'original_price' => 'float',
-        'subtotal' => 'float',
+        'order_id'          => 'integer',
+        'product_id'        => 'integer',
+        'quantity'          => 'integer',
+        'unit_price'        => 'float',
+        'original_price'    => 'float',
+        'subtotal'          => 'float',
+        'commission_value'  => 'float',
+        'commission_amount' => 'float',
     ];
 
     public function order(): BelongsTo
@@ -35,6 +40,11 @@ class OrderItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function commission(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Commission::class);
     }
 
     public function getPriceAttribute(): float

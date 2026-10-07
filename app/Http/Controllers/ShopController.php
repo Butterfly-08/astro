@@ -111,12 +111,16 @@ class ShopController extends Controller
         ));
     }
 
-    public function show(string $slug): View
+    public function show(string $slug, Request $request): View
     {
         $product = Product::active()
             ->where('slug', $slug)
             ->with('category')
             ->firstOrFail();
+
+        if ($request->filled('ref')) {
+            app(\App\Services\ReferralService::class)->trackClick($request->ref, $request, $product);
+        }
 
         $relatedProducts = Product::active()
             ->where('category_id', $product->category_id)

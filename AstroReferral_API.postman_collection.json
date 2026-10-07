@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "a90f23b7-781e-4c7b-b86a-72efb2f1599a",
+		"name": "AstroReferral & Commission Platform API",
+		"description": "Complete Postman API test collection for Astrologer E-commerce + Referral + Commission + Wallet + Withdrawal Platform.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "referralCode",
+			"value": "GURU100",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01 Referral Tracking & Validation",
+			"item": [
+				{
+					"name": "Validate Referral Code",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/referrals/validate/{{referralCode}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "referrals", "validate", "{{referralCode}}"]
+						},
+						"description": "Validates whether an astrologer's referral code exists and is approved for commission attribution."
+					}
+				},
+				{
+					"name": "Track Referral Click (API)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"referral_code\": \"{{referralCode}}\",\n    \"product_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/referrals/track",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "referrals", "track"]
+						},
+						"description": "Records visitor referral attribution, sets cookie and creates tracking record in database."
+					}
+				},
+				{
+					"name": "Web Referral Landing Redirect",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ref/{{referralCode}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["ref", "{{referralCode}}"]
+						},
+						"description": "Public referral URL that sets the astro_referral_code cookie and redirects visitor to shop."
+					}
+				}
+			]
+		},
+		{
+			"name": "02 Astrologer Authentication",
+			"item": [
+				{
+					"name": "Astrologer API Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('token', jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"astro.guru@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "login"]
+						},
+						"description": "Authenticates an astrologer partner and issues bearer API token."
+					}
+				}
+			]
+		},
+		{
+			"name": "03 Astrologer Portal & Wallet API",
+			"item": [
+				{
+					"name": "Get Astrologer Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/profile",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Get Dashboard Overview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/dashboard",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get Wallet & Ledger Transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/wallet",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "wallet"]
+						},
+						"description": "Returns available, pending, and held balances along with double-entry ledger history."
+					}
+				},
+				{
+					"name": "Get Commission History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/commissions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "commissions"]
+						}
+					}
+				},
+				{
+					"name": "Request Withdrawal (UPI / Bank)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Content-Type", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 500.00,\n    \"payment_method\": \"upi\",\n    \"upi_id\": \"astrologer@okhdfcbank\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/withdrawals",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "withdrawals"]
+						},
+						"description": "Submits a withdrawal request. Transactionally locks funds into held_balance."
+					}
+				},
+				{
+					"name": "Get Withdrawal Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/withdrawals",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "withdrawals"]
+						}
+					}
+				},
+				{
+					"name": "Get Product Referral Links",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json"},
+							{"key": "Authorization", "value": "Bearer {{token}}"}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/astrologer/referral-links",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "astrologer", "referral-links"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
