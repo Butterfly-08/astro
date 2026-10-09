@@ -118,6 +118,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label small fw-semibold">Approval Status</label>
                                                     <select name="approval_status" class="form-select" id="statusSelect{{ $astro->id }}" onchange="toggleSuspensionField(this, '{{ $astro->id }}')">
+                                                        <option value="pending" {{ $astro->approval_status === 'pending' ? 'selected' : '' }}>Pending Review</option>
                                                         <option value="approved" {{ $astro->approval_status === 'approved' ? 'selected' : '' }}>Approved (Active Referral Code & Commissions)</option>
                                                         <option value="suspended" {{ $astro->approval_status === 'suspended' ? 'selected' : '' }}>Suspended (Freezes Referral Links)</option>
                                                         <option value="rejected" {{ $astro->approval_status === 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -126,8 +127,8 @@
 
                                                 <div class="mb-3">
                                                     <label class="form-label small fw-semibold">Referral Code</label>
-                                                    <input type="text" name="referral_code" class="form-control text-uppercase font-monospace" value="{{ $astro->referral_code }}" maxlength="20" required>
-                                                    <small class="text-muted">Unique tracking code for this partner</small>
+                                                    <input type="text" name="referral_code" class="form-control text-uppercase font-monospace" value="{{ $astro->referral_code }}" maxlength="20" placeholder="Optional custom code">
+                                                    <small class="text-muted">A unique code is generated automatically when approving if left blank.</small>
                                                 </div>
 
                                                 <div class="mb-3 {{ $astro->approval_status === 'suspended' ? '' : 'd-none' }}" id="suspensionGroup{{ $astro->id }}">

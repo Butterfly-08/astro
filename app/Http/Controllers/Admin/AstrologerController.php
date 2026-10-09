@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAstrologerRequest;
 use App\Http\Requests\UpdateAstrologerRequest;
 use App\Models\Astrologer;
 use App\Models\Service;
+use App\Services\ReferralCodeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +63,7 @@ class AstrologerController extends Controller
     /**
      * Store new astrologer.
      */
-    public function store(StoreAstrologerRequest $request): RedirectResponse
+    public function store(StoreAstrologerRequest $request, ReferralCodeService $codeService): RedirectResponse
     {
         $data = $request->validated();
 
@@ -76,6 +77,9 @@ class AstrologerController extends Controller
             $data['approved_at'] = now();
             $data['approved_by'] = Auth::guard('admin')->id();
         }
+
+        $newAstrologer = new Astrologer(['display_name' => $data['display_name']]);
+        $data['referral_code'] = $codeService->generateForAstrologer($newAstrologer);
 
         $astrologer = Astrologer::create($data);
 

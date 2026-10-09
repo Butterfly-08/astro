@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Astrologer;
 use App\Models\AuditLog;
 use App\Models\Referral;
+use App\Services\ReferralCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,26 +73,52 @@ class ReferralController extends Controller
         return view('admin.referrals.partners', compact('astrologers'));
     }
 
-    public function updatePartnerStatus(Request $request, Astrologer $astrologer)
+    public function updatePartnerStatus(Request $request, Astrologer $astrologer, ReferralCodeService $codeService)
     {
+        if ($request->filled('referral_code')) {
+            $request->merge(['referral_code' => strtoupper(trim($request->input('referral_code')))]);
+        } else {
+            $request->merge(['referral_code' => null]);
+        }
+
         $validated = $request->validate([
-            'approval_status'    => ['required', 'in:approved,rejected,suspended'],
-            'referral_code'      => ['nullable', 'string', 'max:20', 'unique:astrologers,referral_code,' . $astrologer->id],
+            'approval_status'    => ['required', 'in:pending,approved,rejected,suspended'],
+            'referral_code'      => ['nullable', 'string', 'max:20', 'regex:/^[A-Z0-9]+$/', 'unique:astrologers,referral_code,' . $astrologer->id],
             'suspension_reason'  => ['nullable', 'string', 'max:255'],
+        ], [
+            'referral_code.regex' => 'The referral code format is invalid.',
+        ], [
+            'referral_code' => 'referral code',
         ]);
+
+        $newReferralCode = $validated['referral_code'] ?? $astrologer->referral_code;
+        if ($validated['approval_status'] === 'approved' && !$newReferralCode) {
+            $newReferralCode = $codeService->generateForAstrologer($astrologer);
+        }
+
+        $newSuspensionReason = $validated['approval_status'] === 'suspended'
+            ? ($validated['suspension_reason'] ?? 'Suspended by Administrator')
+            : null;
+        $newAstrologerStatus = $validated['approval_status'] === 'approved'
+            ? 'active'
+            : $astrologer->status;
+
+        $isNoOp = $astrologer->approval_status === $validated['approval_status']
+            && $astrologer->referral_code === $newReferralCode
+            && $astrologer->suspension_reason === $newSuspensionReason
+            && $astrologer->status === $newAstrologerStatus;
+
+        if ($isNoOp) {
+            return back()->with('info', 'No changes were made.');
+        }
 
         $adminId = Auth::guard('admin')->id();
         $oldStatus = $astrologer->approval_status;
 
         $astrologer->approval_status = $validated['approval_status'];
-        if (!empty($validated['referral_code'])) {
-            $astrologer->referral_code = strtoupper(trim($validated['referral_code']));
-        }
-        if ($validated['approval_status'] === 'suspended') {
-            $astrologer->suspension_reason = $validated['suspension_reason'] ?? 'Suspended by Administrator';
-        } else {
-            $astrologer->suspension_reason = null;
-        }
+        $astrologer->referral_code = $newReferralCode;
+        $astrologer->suspension_reason = $newSuspensionReason;
+        $astrologer->status = $newAstrologerStatus;
 
         if ($validated['approval_status'] === 'approved' && !$astrologer->approved_at) {
             $astrologer->approved_at = now();

@@ -64,10 +64,19 @@
             padding: 20px 24px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            text-decoration: none;
             color: #FFFFFF;
+        }
+
+        .admin-brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            color: inherit;
+            text-decoration: none;
         }
 
         .admin-brand .brand-logo-icon {
@@ -216,11 +225,14 @@
                 position: fixed;
                 top: 0;
                 bottom: 0;
-                left: -270px;
+                left: 0;
+                width: min(270px, 85vw);
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
 
             .admin-sidebar.show {
-                left: 0;
+                transform: translateX(0);
             }
 
             .sidebar-backdrop {
@@ -253,13 +265,18 @@
     <div class="admin-wrapper position-relative" style="z-index: 10;">
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar" id="adminSidebar">
-            <a href="{{ route('admin.dashboard') }}" class="admin-brand">
-                <i class="bi bi-shield-fill-check brand-logo-icon"></i>
-                <div>
-                    <span class="brand-title">AstroVani</span>
-                    <span class="brand-subtitle">Master Administration</span>
-                </div>
-            </a>
+            <div class="admin-brand">
+                <a href="{{ route('admin.dashboard') }}" class="admin-brand-link">
+                    <i class="bi bi-shield-fill-check brand-logo-icon"></i>
+                    <div>
+                        <span class="brand-title">AstroVani</span>
+                        <span class="brand-subtitle">Master Administration</span>
+                    </div>
+                </a>
+                <button class="btn btn-sm btn-outline-light d-lg-none" id="sidebarClose" type="button" aria-label="Close navigation">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
 
             <div class="sidebar-menu">
                 <div class="sidebar-header">Core Management</div>
@@ -488,6 +505,39 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+
+                @if(session('info'))
+                    <div class="alert alert-info alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                        <div>{{ session('info') }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if(session('warning'))
+                    <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                        <div>{{ session('warning') }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                            <div>
+                                <strong>Please correct the following errors:</strong>
+                                <ul class="mb-0 mt-1">
+                                    @foreach($errors->all() as $validationError)
+                                        <li>{{ $validationError }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
             </div>
 
             <!-- Page Content -->
@@ -506,20 +556,47 @@
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Keep fixed Bootstrap modals outside filtered containers that alter their viewport positioning.
+        document.querySelectorAll('.admin-main .modal').forEach((modal) => {
+            document.body.appendChild(modal);
+        });
+
         // Responsive sidebar toggle for mobile
         const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
         const adminSidebar = document.getElementById('adminSidebar');
         const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
         if (sidebarToggle && adminSidebar && sidebarBackdrop) {
-            sidebarToggle.addEventListener('click', () => {
-                adminSidebar.classList.toggle('show');
-                sidebarBackdrop.classList.toggle('show');
-            });
-
-            sidebarBackdrop.addEventListener('click', () => {
+            const closeSidebar = () => {
                 adminSidebar.classList.remove('show');
                 sidebarBackdrop.classList.remove('show');
+                sidebarToggle.setAttribute('aria-expanded', 'false');
+            };
+
+            sidebarToggle.setAttribute('aria-controls', 'adminSidebar');
+            sidebarToggle.setAttribute('aria-expanded', 'false');
+            sidebarToggle.addEventListener('click', () => {
+                adminSidebar.classList.toggle('show');
+                const isOpen = adminSidebar.classList.contains('show');
+                sidebarBackdrop.classList.toggle('show', isOpen);
+                sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            sidebarClose?.addEventListener('click', closeSidebar);
+            sidebarBackdrop.addEventListener('click', closeSidebar);
+            adminSidebar.querySelectorAll('.sidebar-menu .nav-link-custom').forEach((link) => {
+                link.addEventListener('click', closeSidebar);
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeSidebar();
+                }
+            });
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 992) {
+                    closeSidebar();
+                }
             });
         }
     </script>

@@ -12,6 +12,20 @@ class UpdateAstrologerRequest extends FormRequest
         return Auth::guard('admin')->check();
     }
 
+    public function attributes(): array
+    {
+        return [
+            'referral_code' => 'referral code',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'referral_code.regex' => 'The referral code format is invalid.',
+        ];
+    }
+
     public function rules(): array
     {
         $astrologerId = $this->route('astrologer')?->id;

@@ -69,11 +69,20 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            max-width: 100%;
+        }
+
+        .astro-logo > div {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .astro-logo .logo-star {
             color: var(--astro-gold);
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .astro-logo span.tagline {
@@ -84,6 +93,51 @@
             text-transform: uppercase;
             display: block;
             margin-top: -4px;
+            width: 100%;
+            line-height: 1.2;
+            white-space: normal;
+        }
+
+        @media (max-width: 991.98px) {
+            .astro-logo {
+                font-size: clamp(1.55rem, 6vw, 2.1rem);
+            }
+
+            .astro-logo > div {
+                gap: 5px;
+            }
+
+            .astro-logo .logo-star {
+                font-size: 1.3rem;
+            }
+
+            .astro-logo span.tagline {
+                font-size: 0.62rem;
+                letter-spacing: 0.7px;
+            }
+
+            .navbar-collapse {
+                width: 100%;
+            }
+
+            .navbar-nav {
+                gap: 0.15rem;
+            }
+
+            .nav-link {
+                padding-left: 0.8rem !important;
+                padding-right: 0.8rem !important;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .astro-logo {
+                max-width: 58vw;
+            }
+
+            .astro-logo > div {
+                row-gap: 2px;
+            }
         }
 
         .nav-link {
@@ -266,11 +320,11 @@
         <div class="container">
 
             <!-- Logo -->
-            <a class="astro-logo" href="{{ route('home') }}">
+            <a class="astro-logo notranslate" href="{{ route('home') }}" translate="no">
                 <div>
                     <i class="bi bi-sun-fill logo-star"></i>
                     <span class="notranslate" translate="no">AstroVani</span>
-                    <span class="tagline">Guidance & Spiritual Shop</span>
+                    <span class="tagline notranslate" translate="no">Guidance & Spiritual Shop</span>
                 </div>
             </a>
 
@@ -295,29 +349,29 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
-                           href="{{ route('home') }}">
+                        <a class="nav-link notranslate {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('home') }}" translate="no">
                             Home
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}"
-                           href="{{ route('astrologers.index') }}">
+                        <a class="nav-link notranslate {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('astrologers.index') }}" translate="no">
                             Astrologers
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}"
-                           href="{{ route('services.index') }}">
+                        <a class="nav-link notranslate {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('services.index') }}" translate="no">
                             Services
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}"
-                           href="{{ route('shop.index') }}">
+                        <a class="nav-link notranslate {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}"
+                           href="{{ route('shop.index') }}" translate="no">
 
                             <i class="bi bi-bag-heart me-1 text-warning"></i>
                             Spiritual Shop
@@ -326,13 +380,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#horoscope">
+                        <a class="nav-link notranslate" href="#horoscope" translate="no">
                             Horoscope
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#blogs">
+                        <a class="nav-link notranslate" href="#blogs" translate="no">
                             Blogs
                         </a>
                     </li>
@@ -356,7 +410,7 @@
                     <div id="google_translate_element" aria-hidden="true"></div>
 
                     <!-- CART BUTTON -->
-                    <a href="{{ route('cart.index') }}" class="btn-cart">
+                    <a href="{{ route('cart.index') }}" class="btn-cart notranslate" translate="no">
 
                         <i class="bi bi-cart3"></i>
 
@@ -445,7 +499,7 @@
                     @else
 
                         <a href="{{ route('login') }}"
-                           class="btn btn-astro-outline me-1">
+                           class="btn btn-astro-outline me-1 notranslate" translate="no">
 
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             Login
@@ -453,7 +507,7 @@
                         </a>
 
                         <a href="{{ route('register') }}"
-                           class="btn btn-astro-gold">
+                           class="btn btn-astro-gold notranslate" translate="no">
 
                             <i class="bi bi-person-plus me-1"></i>
                             Register
