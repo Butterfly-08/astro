@@ -12,10 +12,12 @@ class AstrologerReview extends Model
         'astrologer_id',
         'rating',
         'body',
+        'is_visible',
     ];
 
     protected $casts = [
         'rating' => 'integer',
+        'is_visible' => 'boolean',
     ];
 
     public function booking(): BelongsTo

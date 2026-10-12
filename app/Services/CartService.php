@@ -18,7 +18,7 @@ class CartService
 
     protected function userId(): ?int
     {
-        return Auth::guard('web')->id();
+        return Auth::guard('sanctum')->id() ?? Auth::guard('web')->id() ?? Auth::id();
     }
 
     protected function sessionId(): string

@@ -251,7 +251,7 @@ class WalletService
         string $reason,
         int    $adminId
     ): WalletTransaction {
-        $refKey = 'ADMIN-ADJ-' . $wallet->id . '-' . now()->timestamp;
+        $refKey = 'ADMIN-ADJ-' . $wallet->id . '-' . now()->timestamp . '-' . \Illuminate\Support\Str::random(6);
 
         if ($amount > 0) {
             return $this->credit(

@@ -226,9 +226,11 @@
                 top: 0;
                 bottom: 0;
                 left: 0;
-                width: min(270px, 85vw);
+                width: min(280px, 85vw);
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1050;
+                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.4);
             }
 
             .admin-sidebar.show {
@@ -238,12 +240,11 @@
             .sidebar-backdrop {
                 display: none;
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1035;
+                inset: 0;
+                background: rgba(18, 7, 32, 0.65);
+                backdrop-filter: blur(3px);
+                -webkit-backdrop-filter: blur(3px);
+                z-index: 1045;
             }
 
             .sidebar-backdrop.show {
@@ -262,7 +263,7 @@
 
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <div class="admin-wrapper position-relative" style="z-index: 10;">
+    <div class="admin-wrapper position-relative">
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar" id="adminSidebar">
             <div class="admin-brand">
@@ -309,7 +310,7 @@
                     <a href="{{ route('admin.astrologers.index', ['status' => 'pending']) }}" class="nav-link-custom py-1 {{ request('status') === 'pending' ? 'active' : '' }}" style="font-size: 0.82rem;">
                         <i class="bi bi-clock-history text-warning"></i>
                         <span>Pending Approval</span>
-                        <span class="badge bg-danger ms-auto" style="font-size:0.62rem;">{{ $pendingCount }}</span>
+                        <span class="badge bg-warning text-dark ms-auto" style="font-size:0.62rem;">{{ $pendingCount }}</span>
                     </a>
                 </div>
                 @endif
@@ -339,7 +340,7 @@
                         <i class="bi bi-bag-check-fill"></i>
                         <span>Orders</span>
                         @if($pendingOrdersCount > 0)
-                            <span class="badge bg-danger ms-auto" style="font-size:0.65rem;">{{ $pendingOrdersCount }}</span>
+                            <span class="badge bg-warning text-dark ms-auto" style="font-size:0.65rem;">{{ $pendingOrdersCount }}</span>
                         @endif
                     </a>
                 </div>
@@ -354,7 +355,7 @@
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#reviews" class="nav-link-custom">
+                    <a href="{{ route('admin.reviews.index') }}" class="nav-link-custom {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
                         <i class="bi bi-chat-square-quote-fill"></i>
                         <span>Reviews</span>
                     </a>
@@ -408,13 +409,13 @@
 
                 <div class="sidebar-header">Content & Settings</div>
                 <div class="nav-item-custom">
-                    <a href="#blogs" class="nav-link-custom">
+                    <a href="{{ route('admin.blogs.index') }}" class="nav-link-custom {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
                         <i class="bi bi-journal-richtext"></i>
                         <span>Blogs & Articles</span>
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#horoscopes" class="nav-link-custom">
+                    <a href="{{ route('admin.horoscopes.index') }}" class="nav-link-custom {{ request()->routeIs('admin.horoscopes.*') ? 'active' : '' }}">
                         <i class="bi bi-compass-fill"></i>
                         <span>Horoscopes</span>
                     </a>

@@ -97,50 +97,58 @@
     </div>
 </div>
 
-<!-- Architecture & Phase Status Card -->
+<!-- Platform Health & Quick Actions -->
 <div class="row g-4 mb-4">
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm rounded-3">
             <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold"><i class="bi bi-shield-check text-primary me-2"></i> Phase 1 System Health & Authentication Status</h6>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Operational</span>
+                <h6 class="mb-0 fw-bold"><i class="bi bi-shield-check text-primary me-2"></i> Platform Health & Security Status</h6>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i> All Systems Operational</span>
             </div>
             <div class="card-body p-4">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="p-3 rounded-3 border bg-light">
+                        <div class="p-3 rounded-3 border bg-light h-100">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-shield-lock-fill text-warning fs-5"></i>
-                                <span class="fw-bold">Admin Authentication Guard</span>
+                                <span class="fw-bold">Admin Portal Security</span>
                             </div>
                             <p class="small text-muted mb-2">
-                                Dedicated guard <code>admin</code> powered by <code>admins</code> table and <code>AdminMiddleware</code>.
+                                Dedicated administrator session guard with role verification and active credential protection.
                             </p>
-                            <span class="badge bg-success"><i class="bi bi-check2"></i> Strictly Isolated</span>
+                            <span class="badge bg-success"><i class="bi bi-check2 me-1"></i> Protected</span>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="p-3 rounded-3 border bg-light">
+                        <div class="p-3 rounded-3 border bg-light h-100">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-person-fill-check text-primary fs-5"></i>
-                                <span class="fw-bold">Customer Authentication Guard</span>
+                                <span class="fw-bold">Customer Portal Security</span>
                             </div>
                             <p class="small text-muted mb-2">
-                                Dedicated guard <code>web</code> powered by <code>users</code> table and standard web authentication.
+                                Customer authentication guard with encrypted sessions, cart persistence, and order tracking.
                             </p>
-                            <span class="badge bg-success"><i class="bi bi-check2"></i> Strictly Isolated</span>
+                            <span class="badge bg-success"><i class="bi bi-check2 me-1"></i> Protected</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-4 p-3 rounded-3 border border-success bg-success bg-opacity-10">
-                    <div class="d-flex gap-2">
-                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                        <div>
-                            <div class="fw-bold text-dark">Phase 2 Active: Astrologer & Service Ecosystem</div>
-                            <small class="text-muted">
-                                Dual-authentication, Astrologer CRUD, Services catalog, public directory & filters, weekly availability scheduling, and approval workflows are operational. Subsequent phases will integrate Appointment Booking with double-booking prevention, shop catalog, cart, orders, and REST APIs.
-                            </small>
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span class="fw-semibold text-dark small"><i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Administrative Shortcuts:</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="{{ route('admin.astrologers.create') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-person-plus-fill me-1"></i> Add Astrologer
+                            </a>
+                            <a href="{{ route('admin.bookings.create') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-calendar-plus-fill me-1"></i> New Booking
+                            </a>
+                            <a href="{{ route('admin.products.create') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-box-seam me-1"></i> Add Product
+                            </a>
+                            <a href="{{ route('admin.settings.index') }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-gear-fill me-1"></i> Settings
+                            </a>
                         </div>
                     </div>
                 </div>

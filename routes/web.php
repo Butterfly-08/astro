@@ -26,6 +26,10 @@ use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController
 use App\Http\Controllers\Admin\WalletController as AdminWalletController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\ReferralController as AdminReferralController;
+use App\Http\Controllers\Admin\HoroscopeController as AdminHoroscopeController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ReferralLandingController;
 use App\Http\Controllers\Astrologer\AstrologerAuthController;
 use App\Http\Controllers\Astrologer\AstrologerDashboardController;
@@ -44,6 +48,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/horoscopes', [ContentController::class, 'horoscopes'])->name('horoscopes.index');
+Route::get('/blogs', [ContentController::class, 'blogs'])->name('blogs.index');
+Route::get('/blogs/{slug}', [ContentController::class, 'showBlog'])->name('blogs.show');
 
 
 /*
@@ -302,6 +310,17 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('admin.dashboard');
 
+        Route::resource('horoscopes', AdminHoroscopeController::class)
+            ->except('show')
+            ->names('admin.horoscopes');
+
+        Route::resource('blogs', AdminBlogController::class)
+            ->except('show')
+            ->names('admin.blogs');
+
+        Route::get('/reviews', [AdminReviewController::class, 'index'])->name('admin.reviews.index');
+        Route::patch('/reviews/{review}/visibility', [AdminReviewController::class, 'updateVisibility'])->name('admin.reviews.visibility');
+
 
         /*
         |--------------------------------------------------------------------------
@@ -406,25 +425,7 @@ Route::prefix('admin')->group(function () {
             });
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Booking Management
-        |--------------------------------------------------------------------------
-        */
 
-        Route::prefix('bookings')
-            ->name('admin.bookings.')
-            ->group(function () {
-
-                Route::get('/', [AdminBookingController::class, 'index'])
-                    ->name('index');
-
-                Route::get('/{booking}', [AdminBookingController::class, 'show'])
-                    ->name('show');
-
-                Route::put('/{booking}/status', [AdminBookingController::class, 'updateStatus'])
-                    ->name('update-status');
-            });
 
 
         /*

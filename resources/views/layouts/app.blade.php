@@ -380,13 +380,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate" href="#horoscope" translate="no">
+                        <a class="nav-link notranslate {{ request()->routeIs('horoscopes.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('horoscopes.index') }}" translate="no">
                             Horoscope
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate" href="#blogs" translate="no">
+                        <a class="nav-link notranslate {{ request()->routeIs('blogs.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('blogs.index') }}" translate="no">
                             Blogs
                         </a>
                     </li>
@@ -675,8 +675,13 @@
                         </li>
 
                         <li class="mb-2">
-                            <a href="#horoscope">
+                            <a href="{{ route('horoscopes.index') }}">
                                 Daily Horoscopes
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{{ route('blogs.index') }}">
+                                Astrology Articles
                             </a>
                         </li>
 
