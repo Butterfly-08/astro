@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@php
+    /** @var \App\Models\ProductCategory $category */
+@endphp
+
 @section('title', 'Edit Category — ' . $category->name)
 @section('page_title', 'Edit Category')
 

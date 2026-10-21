@@ -1,6 +1,6 @@
 <!-- AstroVani Fullscreen Live Background Wallpaper Video & Constellation Canvas -->
 <div id="astro-wallpaper-wrapper" class="astro-wallpaper-wrapper" aria-hidden="true">
-    <video id="astro-wallpaper-video" class="astro-wallpaper-video" autoplay muted loop playsinline preload="auto">
+    <video id="astro-wallpaper-video" class="astro-wallpaper-video" autoplay muted loop playsinline preload="none">
         <!-- Managed dynamically by astro-live-wallpaper.js -->
     </video>
     <canvas id="astro-starfield-canvas" class="astro-starfield-canvas"></canvas>

@@ -35,6 +35,88 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
 
     // ----------------------------------------------------------------------
+    // Endpoint contract from Astro API EndPOints.xlsx
+    // ----------------------------------------------------------------------
+    // These routes intentionally define the API surface only. The referenced
+    // EndpointController actions can be implemented independently.
+    $endpointController = 'App\\Http\\Controllers\\Api\\EndpointController';
+
+    Route::post('/home', [$endpointController, 'home']);
+
+    Route::prefix('auth')->group(function () use ($endpointController) {
+        Route::get('/me', [$endpointController, 'me'])->middleware('auth:sanctum');
+        Route::post('/forgot-password', [$endpointController, 'forgotPassword']);
+        Route::post('/reset-password', [$endpointController, 'resetPassword']);
+    });
+
+    Route::prefix('astrologers')->group(function () use ($endpointController) {
+        Route::post('/', [$endpointController, 'astrologers']);
+        Route::post('/{id}', [$endpointController, 'astrologer']);
+        Route::post('/{id}/availability', [$endpointController, 'astrologerAvailability']);
+        Route::post('/{id}/services', [$endpointController, 'astrologerServices']);
+        Route::post('/{id}/reviews', [$endpointController, 'astrologerReviews']);
+    });
+
+    Route::post('/search/astrologers', [$endpointController, 'searchAstrologers']);
+
+    Route::middleware('auth:sanctum')->group(function () use ($endpointController) {
+        Route::get('/favorites', [$endpointController, 'favorites']);
+        Route::post('/favorites/{astrologerId}', [$endpointController, 'addFavorite']);
+        Route::delete('/favorites/{astrologerId}', [$endpointController, 'removeFavorite']);
+
+        Route::post('/bookings/{id}/confirm', [$endpointController, 'confirmBooking']);
+        Route::post('/bookings/{id}/reschedule', [$endpointController, 'rescheduleBooking']);
+        Route::get('/bookings/{id}/status', [$endpointController, 'bookingStatus']);
+
+        Route::post('/astrologer/bookings/{id}/accept', [$endpointController, 'acceptBooking']);
+        Route::post('/astrologer/bookings/{id}/reject', [$endpointController, 'rejectBooking']);
+
+        Route::post('/consultations/{id}/chat/start', [$endpointController, 'startChat']);
+        Route::get('/consultations/{id}/messages', [$endpointController, 'messages']);
+        Route::post('/consultations/{id}/messages', [$endpointController, 'sendMessage']);
+        Route::post('/consultations/{id}/chat/end', [$endpointController, 'endChat']);
+        Route::get('/consultations/{id}/chat/status', [$endpointController, 'chatStatus']);
+        Route::post('/consultations/{id}/call/request', [$endpointController, 'requestCall']);
+        Route::post('/consultations/{id}/video/request', [$endpointController, 'requestVideo']);
+        Route::post('/consultations/{id}/call/accept', [$endpointController, 'acceptCall']);
+        Route::post('/consultations/{id}/video/accept', [$endpointController, 'acceptVideo']);
+        Route::post('/consultations/{id}/call/reject', [$endpointController, 'rejectCall']);
+        Route::post('/consultations/{id}/call/token', [$endpointController, 'callToken']);
+        Route::post('/consultations/{id}/call/join', [$endpointController, 'joinCall']);
+        Route::post('/consultations/{id}/call/leave', [$endpointController, 'leaveCall']);
+        Route::post('/consultations/{id}/call/end', [$endpointController, 'endCall']);
+        Route::get('/consultations/{id}/call/status', [$endpointController, 'callStatus']);
+
+        Route::get('/wallet', [$endpointController, 'wallet']);
+        Route::get('/wallet/transactions', [$endpointController, 'walletTransactions']);
+        Route::post('/wallet/topups', [$endpointController, 'createTopup']);
+        Route::get('/wallet/topups/{id}', [$endpointController, 'topupStatus']);
+        Route::post('/payments/order', [$endpointController, 'paymentOrder']);
+        Route::post('/payments/verify', [$endpointController, 'verifyPayment']);
+        Route::get('/payments/{id}', [$endpointController, 'paymentStatus']);
+        Route::post('/payments/refund', [$endpointController, 'refundPayment']);
+        Route::get('/invoices/{id}', [$endpointController, 'invoice']);
+        Route::get('/referrals/invites', [$endpointController, 'referralInvites']);
+
+        Route::get('/wishlist', [$endpointController, 'wishlist']);
+        Route::post('/wishlist/items', [$endpointController, 'addWishlistItem']);
+        Route::delete('/wishlist/items/{id}', [$endpointController, 'removeWishlistItem']);
+        Route::get('/addresses', [$endpointController, 'addresses']);
+        Route::post('/addresses', [$endpointController, 'createAddress']);
+        Route::put('/addresses/{id}', [$endpointController, 'updateAddress']);
+        Route::delete('/addresses/{id}', [$endpointController, 'deleteAddress']);
+        Route::post('/orders/{id}/cancel', [$endpointController, 'cancelOrder']);
+        Route::get('/notifications', [$endpointController, 'notifications']);
+    });
+
+    Route::get('/store/categories', [$endpointController, 'storeCategories']);
+    Route::get('/store/products', [$endpointController, 'storeProducts']);
+    Route::get('/store/products/{id}', [$endpointController, 'storeProduct']);
+
+    Route::post('/webhooks/video-provider', [$endpointController, 'videoWebhook']);
+    Route::post('/webhooks/payment-provider', [$endpointController, 'paymentWebhook']);
+
+    // ----------------------------------------------------------------------
     // 1. Referral & Attribution Tracking (Public)
     // ----------------------------------------------------------------------
     Route::prefix('referrals')->group(function () {

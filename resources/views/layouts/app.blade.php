@@ -836,7 +836,7 @@
             websiteLanguageSelect.value = selectedWebsiteLanguage();
         }
     </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
     <script src="{{ asset('js/astro-live-wallpaper.js') }}"></script>
     <script src="{{ asset('js/astro-dock.js') }}"></script>
 
