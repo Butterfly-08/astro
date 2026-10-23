@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAstrologerRequest;
 use App\Http\Requests\UpdateAstrologerRequest;
 use App\Models\Astrologer;
+use App\Models\Booking;
+use App\Models\Order;
 use App\Models\Service;
 use App\Services\ReferralCodeService;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +23,17 @@ class AstrologerController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Astrologer::with('services')->latest();
+        $query = Astrologer::with('services')
+            ->withCount([
+                'bookings as total_bookings_count',
+                'bookings as completed_bookings_count' => fn($q) => $q->where('status', 'completed'),
+                'referredOrders as total_orders_count',
+                'referredOrders as delivered_orders_count' => fn($q) => $q->where('status', 'delivered'),
+                'calls as total_calls_count',
+                'attendedCalls as attended_calls_count',
+                'ignoredCalls as ignored_calls_count',
+            ])
+            ->latest();
 
         // Filter by status
         if ($request->filled('status')) {
@@ -42,10 +54,14 @@ class AstrologerController extends Controller
         $services = Service::active()->ordered()->get();
 
         $stats = [
-            'total'    => Astrologer::count(),
-            'pending'  => Astrologer::pending()->count(),
-            'active'   => Astrologer::active()->count(),
-            'featured' => Astrologer::featured()->count(),
+            'total'          => Astrologer::count(),
+            'pending'        => Astrologer::pending()->count(),
+            'active'         => Astrologer::active()->count(),
+            'featured'       => Astrologer::featured()->count(),
+            'total_orders'   => Order::whereNotNull('referrer_astrologer_id')->count(),
+            'total_bookings' => Booking::count(),
+            'attended_calls' => Booking::where('consultation_type', 'call')->where('status', 'completed')->count(),
+            'ignored_calls'  => Booking::where('consultation_type', 'call')->whereIn('status', ['rejected', 'cancelled'])->count(),
         ];
 
         return view('admin.astrologers.index', compact('astrologers', 'services', 'stats'));
@@ -97,8 +113,30 @@ class AstrologerController extends Controller
      */
     public function show(Astrologer $astrologer): View
     {
-        $astrologer->load('services', 'availability', 'approvedBy');
-        return view('admin.astrologers.show', compact('astrologer'));
+        $astrologer->load('services', 'availability', 'approvedBy', 'wallet');
+        $astrologer->loadCount([
+            'bookings as total_bookings_count',
+            'bookings as completed_bookings_count' => fn($q) => $q->where('status', 'completed'),
+            'referredOrders as total_orders_count',
+            'referredOrders as delivered_orders_count' => fn($q) => $q->where('status', 'delivered'),
+            'calls as total_calls_count',
+            'attendedCalls as attended_calls_count',
+            'ignoredCalls as ignored_calls_count',
+        ]);
+
+        $recentCalls = $astrologer->calls()
+            ->with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $recentOrders = $astrologer->referredOrders()
+            ->with('user')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('admin.astrologers.show', compact('astrologer', 'recentCalls', 'recentOrders'));
     }
 
     /**

@@ -87,11 +87,84 @@
     </div>
 </div>
 
+{{-- Activity Metric Highlights --}}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-primary border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold">Consultation Bookings</span>
+                    <h3 class="fw-bold my-1 text-primary">{{ $astrologer->total_bookings_count }}</h3>
+                    <small class="text-success fw-semibold"><i class="bi bi-check-circle-fill me-1"></i>{{ $astrologer->completed_bookings_count }} Completed</small>
+                </div>
+                <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3 fs-3">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-purple border-4" style="border-left-color: #6f42c1 !important;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold">Store Orders Taken</span>
+                    <h3 class="fw-bold my-1 text-dark" style="color: #6f42c1 !important;">{{ $astrologer->total_orders_count }}</h3>
+                    <small class="text-success fw-semibold"><i class="bi bi-truck me-1"></i>{{ $astrologer->delivered_orders_count }} Delivered</small>
+                </div>
+                <div class="rounded-3 bg-purple bg-opacity-10 p-3 fs-3" style="color: #6f42c1; background-color: rgba(111, 66, 193, 0.1);">
+                    <i class="bi bi-bag-check-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-success border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold">Calls Attended</span>
+                    <h3 class="fw-bold my-1 text-success">{{ $astrologer->attended_calls_count }}</h3>
+                    <small class="text-muted">
+                        @php
+                            $callTotal = $astrologer->attended_calls_count + $astrologer->ignored_calls_count;
+                            $attendRate = $callTotal > 0 ? round(($astrologer->attended_calls_count / $callTotal) * 100) : 0;
+                        @endphp
+                        <i class="bi bi-percent me-1"></i>{{ $attendRate }}% Attendance rate
+                    </small>
+                </div>
+                <div class="rounded-3 bg-success bg-opacity-10 text-success p-3 fs-3">
+                    <i class="bi bi-telephone-inbound-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-danger border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small text-uppercase fw-semibold">Calls Ignored</span>
+                    <h3 class="fw-bold my-1 text-danger">{{ $astrologer->ignored_calls_count }}</h3>
+                    <small class="text-danger fw-semibold">
+                        <i class="bi bi-x-circle-fill me-1"></i>Rejected / Cancelled
+                    </small>
+                </div>
+                <div class="rounded-3 bg-danger bg-opacity-10 text-danger p-3 fs-3">
+                    <i class="bi bi-telephone-x-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- Tabs --}}
 <ul class="nav nav-tabs mb-0" id="profileTabs" role="tablist" style="border-bottom: none;">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button">
             <i class="bi bi-info-circle me-1"></i>Overview
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#tab-activity" type="button">
+            <i class="bi bi-telephone-inbound me-1"></i>Orders & Call Activity
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -163,6 +236,165 @@
         <div class="detail-item">
             <div class="detail-label">Last Updated</div>
             <div class="detail-value">{{ $astrologer->updated_at->diffForHumans() }}</div>
+        </div>
+    </div>
+
+    {{-- Orders & Call Activity Tab --}}
+    <div class="tab-pane fade info-tab-content" id="tab-activity" role="tabpanel" style="border-top:none;border-radius:0 12px 12px 12px;">
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3 bg-light">
+                    <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-telephone-fill text-success"></i> Call Consultations Summary
+                    </h6>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted">Total Voice Calls Received</span>
+                        <span class="fw-bold fs-6">{{ $astrologer->total_calls_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i> Calls Attended (Completed)</span>
+                        <span class="badge bg-success fs-6">{{ $astrologer->attended_calls_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i> Calls Ignored (Rejected / Cancelled)</span>
+                        <span class="badge bg-danger fs-6">{{ $astrologer->ignored_calls_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <span class="text-muted">Call Response / Attendance Rate</span>
+                        <span class="fw-bold text-primary fs-6">{{ $attendRate }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3 bg-light">
+                    <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-bag-check-fill text-primary"></i> Orders & Consultations Taken
+                    </h6>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted">Total Consultations Booked</span>
+                        <span class="fw-bold fs-6">{{ $astrologer->total_bookings_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted">Consultations Completed</span>
+                        <span class="badge bg-primary fs-6">{{ $astrologer->completed_bookings_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted">E-Commerce Store Orders Taken</span>
+                        <span class="fw-bold fs-6">{{ $astrologer->total_orders_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <span class="text-muted">Store Orders Delivered</span>
+                        <span class="badge bg-success fs-6">{{ $astrologer->delivered_orders_count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Recent Calls Table --}}
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold mb-0"><i class="bi bi-telephone-inbound text-success me-2"></i>Recent Voice Call Consultations</h6>
+                <a href="{{ route('admin.bookings.index', ['astrologer_id' => $astrologer->id]) }}" class="btn btn-sm btn-outline-primary">View All Bookings</a>
+            </div>
+            @if($recentCalls->isEmpty())
+                <p class="text-muted small py-3">No voice call consultations recorded for this astrologer yet.</p>
+            @else
+                <div class="table-responsive border rounded-3">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Booking #</th>
+                                <th>Customer</th>
+                                <th>Date & Time</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentCalls as $call)
+                                <tr>
+                                    <td class="font-monospace fw-bold">{{ $call->booking_number }}</td>
+                                    <td>{{ $call->user->full_name ?? ($call->user->first_name . ' ' . $call->user->last_name) }}</td>
+                                    <td>{{ $call->booking_date->format('d M Y') }} &bull; {{ $call->formatted_time_slot }}</td>
+                                    <td>{{ $call->duration_minutes }} mins</td>
+                                    <td>
+                                        @if($call->status === 'completed')
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Attended
+                                            </span>
+                                        @elseif(in_array($call->status, ['rejected', 'cancelled']))
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                                <i class="bi bi-x-circle-fill me-1"></i>Ignored ({{ ucfirst($call->status) }})
+                                            </span>
+                                        @else
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                                                <i class="bi bi-clock me-1"></i>{{ ucfirst($call->status) }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>₹{{ number_format($call->amount, 2) }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ route('admin.bookings.show', $call) }}" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;">Details</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+
+        {{-- Recent Referred Orders Table --}}
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold mb-0"><i class="bi bi-bag-check text-primary me-2"></i>Recent E-Commerce Orders Taken / Handled</h6>
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-primary">View All Orders</a>
+            </div>
+            @if($recentOrders->isEmpty())
+                <p class="text-muted small py-3">No e-commerce store orders referred/taken by this astrologer yet.</p>
+            @else
+                <div class="table-responsive border rounded-3">
+                    <table class="table table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Order Status</th>
+                                <th>Payment</th>
+                                <th>Total</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentOrders as $ord)
+                                <tr>
+                                    <td class="font-monospace fw-bold">{{ $ord->order_number }}</td>
+                                    <td>{{ $ord->user->full_name ?? ($ord->shipping_name ?? 'Customer') }}</td>
+                                    <td>{{ $ord->created_at->format('d M Y') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $ord->status === 'delivered' ? 'success' : ($ord->status === 'cancelled' ? 'danger' : 'info') }}-subtle text-{{ $ord->status === 'delivered' ? 'success' : ($ord->status === 'cancelled' ? 'danger' : 'info') }} border">
+                                            {{ ucfirst($ord->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $ord->payment_status === 'paid' ? 'success' : 'warning text-dark' }}">
+                                            {{ ucfirst($ord->payment_status) }}
+                                        </span>
+                                    </td>
+                                    <td class="fw-semibold">₹{{ number_format($ord->total_amount, 2) }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ route('admin.orders.show', $ord) }}" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;">View Order</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
     </div>
 

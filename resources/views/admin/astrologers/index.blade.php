@@ -24,28 +24,36 @@
 
 {{-- Stats Row --}}
 <div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
         <div class="stat-mini-card">
             <div class="number text-primary">{{ $stats['total'] }}</div>
             <div class="text-muted small mt-1">Total Astrologers</div>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="stat-mini-card">
-            <div class="number text-warning">{{ $stats['pending'] }}</div>
-            <div class="text-muted small mt-1">Pending Approval</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
         <div class="stat-mini-card">
             <div class="number text-success">{{ $stats['active'] }}</div>
-            <div class="text-muted small mt-1">Active</div>
+            <div class="text-muted small mt-1">Active Astrologers</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-mini-card">
-            <div class="number" style="color: #F5B041;">{{ $stats['featured'] }}</div>
-            <div class="text-muted small mt-1">Featured</div>
+        <div class="stat-mini-card border-start border-success border-3">
+            <div class="number text-success"><i class="bi bi-telephone-inbound-fill me-1 fs-5"></i>{{ $stats['attended_calls'] }}</div>
+            <div class="text-muted small mt-1">Calls Attended</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-2">
+        <div class="stat-mini-card border-start border-danger border-3">
+            <div class="number text-danger"><i class="bi bi-telephone-x-fill me-1 fs-5"></i>{{ $stats['ignored_calls'] }}</div>
+            <div class="text-muted small mt-1">Calls Ignored</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-mini-card border-start border-primary border-3">
+            <div class="number text-dark">
+                {{ $stats['total_bookings'] }} <span class="fs-6 text-muted fw-normal">bk / {{ $stats['total_orders'] }} ord</span>
+            </div>
+            <div class="text-muted small mt-1">Total Orders & Bookings</div>
         </div>
     </div>
 </div>
@@ -96,7 +104,8 @@
                     <tr>
                         <th style="width:50px">#</th>
                         <th>Astrologer</th>
-                        <th>Services</th>
+                        <th>Orders Taken</th>
+                        <th>Call Activity</th>
                         <th>Rates (₹/min)</th>
                         <th>Rating</th>
                         <th>Status</th>
@@ -118,7 +127,11 @@
                                     </div>
                                 @endif
                                 <div>
-                                    <div class="fw-semibold small">{{ $astrologer->display_name }}</div>
+                                    <div class="fw-semibold small">
+                                        <a href="{{ route('admin.astrologers.show', $astrologer) }}" class="text-dark text-decoration-none">
+                                            {{ $astrologer->display_name }}
+                                        </a>
+                                    </div>
                                     <div class="text-muted" style="font-size: 0.77rem;">{{ $astrologer->email }}</div>
                                     @if($astrologer->experience_years)
                                         <div class="text-muted" style="font-size: 0.75rem;"><i class="bi bi-briefcase me-1"></i>{{ $astrologer->experience_years }} yrs exp.</div>
@@ -127,13 +140,29 @@
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex flex-wrap gap-1">
-                                @foreach($astrologer->services->take(3) as $svc)
-                                    <span class="badge bg-light text-dark border" style="font-size: 0.72rem;">{{ $svc->name }}</span>
-                                @endforeach
-                                @if($astrologer->services->count() > 3)
-                                    <span class="badge bg-secondary" style="font-size: 0.72rem;">+{{ $astrologer->services->count() - 3 }}</span>
-                                @endif
+                            <div style="font-size: 0.8rem;">
+                                <div class="fw-bold text-primary mb-1">
+                                    <i class="bi bi-calendar2-check me-1"></i>{{ $astrologer->total_bookings_count }} Bookings
+                                    <span class="text-success small fw-normal">({{ $astrologer->completed_bookings_count }} done)</span>
+                                </div>
+                                <div class="text-muted">
+                                    <i class="bi bi-bag-check me-1"></i>{{ $astrologer->total_orders_count }} Store Orders
+                                    <span class="text-success small">({{ $astrologer->delivered_orders_count }} deliv.)</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.8rem;">
+                                <div class="mb-1">
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                        <i class="bi bi-telephone-inbound-fill me-1"></i>{{ $astrologer->attended_calls_count }} Attended
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="badge {{ $astrologer->ignored_calls_count > 0 ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-light text-muted border' }} px-2 py-1">
+                                        <i class="bi bi-telephone-x-fill me-1"></i>{{ $astrologer->ignored_calls_count }} Ignored
+                                    </span>
+                                </div>
                             </div>
                         </td>
                         <td>

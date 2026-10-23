@@ -159,6 +159,44 @@ class AstrologerApiController extends Controller
         ]);
     }
 
+    public function withdrawalLimits(Request $request): JsonResponse
+    {
+        $astrologer = $request->user()->astrologer;
+        $wallet = $astrologer->wallet;
+        $minAmount = (float) Setting::get(Setting::WITHDRAWAL_MIN_AMOUNT, 500);
+        $maxAmount = (float) Setting::get(Setting::WITHDRAWAL_MAX_AMOUNT, 50000);
+        $feeType = Setting::get(Setting::WITHDRAWAL_FEE_TYPE, 'percentage');
+        $feeValue = (float) Setting::get(Setting::WITHDRAWAL_FEE_VALUE, 0);
+
+        $available = (float) ($wallet?->available_balance ?? 0);
+        $held = (float) ($wallet?->held_balance ?? 0);
+        $withdrawable = max(0, $available - $held);
+
+        $hasPending = Withdrawal::where('astrologer_id', $astrologer->id)
+            ->whereIn('status', [
+                Withdrawal::STATUS_PENDING,
+                Withdrawal::STATUS_UNDER_REVIEW,
+                Withdrawal::STATUS_APPROVED,
+                Withdrawal::STATUS_PROCESSING,
+            ])
+            ->exists();
+
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'available_balance'    => $available,
+                'held_balance'         => $held,
+                'withdrawable_balance' => $withdrawable,
+                'min_amount'           => $minAmount,
+                'max_amount'           => $maxAmount,
+                'fee_type'             => $feeType,
+                'fee_value'            => $feeValue,
+                'has_pending_request'  => $hasPending,
+                'supported_methods'    => ['upi', 'bank_transfer'],
+            ],
+        ]);
+    }
+
     public function withdrawals(Request $request): JsonResponse
     {
         $astrologer = $request->user()->astrologer;
@@ -170,6 +208,25 @@ class AstrologerApiController extends Controller
         return response()->json([
             'success' => true,
             'data'    => $withdrawals,
+        ]);
+    }
+
+    public function showWithdrawal(Request $request, int $id): JsonResponse
+    {
+        $astrologer = $request->user()->astrologer;
+
+        $withdrawal = Withdrawal::where('astrologer_id', $astrologer->id)->find($id);
+
+        if (!$withdrawal) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Withdrawal request not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => $withdrawal,
         ]);
     }
 
@@ -195,6 +252,35 @@ class AstrologerApiController extends Controller
                 'message' => 'Withdrawal request created successfully.',
                 'data'    => $withdrawal,
             ], 201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
+
+    public function cancelWithdrawal(Request $request, int $id): JsonResponse
+    {
+        $astrologer = $request->user()->astrologer;
+
+        $withdrawal = Withdrawal::where('astrologer_id', $astrologer->id)->find($id);
+
+        if (!$withdrawal) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Withdrawal request not found.',
+            ], 404);
+        }
+
+        try {
+            $this->withdrawalService->cancel($withdrawal);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal request cancelled successfully and funds returned to available balance.',
+                'data'    => $withdrawal->fresh(),
+            ]);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,

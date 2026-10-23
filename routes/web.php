@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\ReferralController as AdminReferralController;
 use App\Http\Controllers\Admin\HoroscopeController as AdminHoroscopeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ReferralLandingController;
 use App\Http\Controllers\Astrologer\AstrologerAuthController;
@@ -577,6 +578,13 @@ Route::prefix('admin')->group(function () {
             Route::get('/partners', [AdminReferralController::class, 'partners'])->name('partners');
             Route::post('/partners/{astrologer}/status', [AdminReferralController::class, 'updatePartnerStatus'])->name('partners.update-status');
         });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Astrologers Booking & Store Orders Reports
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.reports.index');
     });
 });
 

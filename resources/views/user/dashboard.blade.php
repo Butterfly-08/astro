@@ -15,12 +15,39 @@
                 </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                @if($user->isAstrologer())
+                    <a href="{{ route('astrologer.dashboard') }}" class="btn btn-warning text-dark fw-bold me-2">
+                        <i class="bi bi-star-fill me-1"></i> Astrologer Panel
+                    </a>
+                @endif
                 <a href="{{ route('astrologers.index') }}" class="btn btn-astro-gold me-2">
                     <i class="bi bi-calendar-plus me-1"></i> Book Consultation
                 </a>
             </div>
         </div>
     </div>
+
+    @if($user->isAstrologer())
+        <div class="alert alert-warning border-0 shadow-sm d-flex flex-column flex-md-row justify-content-between align-items-md-center p-3 mb-4 rounded-3" style="background: linear-gradient(90deg, #FFF8E7 0%, #FFF3D6 100%); border-left: 4px solid #F5B041 !important;">
+            <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+                <div class="rounded-circle bg-warning bg-opacity-25 p-2 text-warning fs-4 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                    <i class="bi bi-star-fill text-dark"></i>
+                </div>
+                <div>
+                    <strong class="text-dark d-block">Astrologer Partner Account Active</strong>
+                    <span class="small text-muted font-monospace">User ID: <span class="fw-bold text-primary">#{{ $user->id }}</span> | Astrologer ID: <span class="fw-bold text-dark">AST-{{ $user->astrologer?->id }}</span> | Code: <span class="fw-bold text-warning">{{ $user->astrologer?->referral_code }}</span></span>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('astrologer.withdrawals.index') }}" class="btn btn-sm btn-outline-dark fw-semibold">
+                    <i class="bi bi-cash-stack me-1"></i> Payout Requests
+                </a>
+                <a href="{{ route('astrologer.dashboard') }}" class="btn btn-sm btn-warning text-dark fw-bold shadow-sm">
+                    <i class="bi bi-speedometer2 me-1"></i> Open Astrologer Panel
+                </a>
+            </div>
+        </div>
+    @endif
 
     <div class="row g-4">
         <!-- Customer Dashboard Sidebar -->

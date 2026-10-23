@@ -298,6 +298,13 @@
             </div>
 
             <div>
+                <a href="{{ route('astrologer.login') }}"
+                   class="text-warning text-decoration-none me-3 fw-semibold"
+                   style="font-size: 0.8rem;">
+                    <i class="bi bi-star-fill me-1"></i>
+                    Astrologer Portal
+                </a>
+
                 <a href="{{ route('admin.login') }}"
                    class="text-white-50 text-decoration-none me-3"
                    style="font-size: 0.8rem;">
@@ -425,95 +432,171 @@
 
                     @auth('web')
 
-                        <div class="dropdown">
+                        @if(Auth::guard('web')->user()->isAstrologer())
+                            <!-- Dedicated Astrologer User Panel Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-warning text-dark dropdown-toggle d-flex align-items-center gap-2 fw-semibold shadow-sm"
+                                        type="button"
+                                        id="astrologerMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        style="border-color: #F5B041; background-color: rgba(245, 176, 65, 0.1);">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <span>
+                                        {{ Auth::user()->astrologer?->display_name ?? Auth::user()->first_name }}
+                                    </span>
+                                    <span class="badge bg-dark text-warning ms-1" style="font-size: 0.7rem;">Astrologer</span>
+                                </button>
 
-                            <button class="btn btn-astro-outline dropdown-toggle d-flex align-items-center gap-2"
-                                    type="button"
-                                    id="userMenuButton"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0"
+                                    aria-labelledby="astrologerMenuButton" style="min-width: 270px;">
+                                    <li class="px-3 py-2 bg-light border-bottom rounded-top">
+                                        <div class="small fw-bold text-dark">{{ Auth::user()->astrologer?->display_name ?? Auth::user()->full_name }}</div>
+                                        <div class="text-muted font-monospace mt-1" style="font-size: 0.78rem;">
+                                            User ID: <span class="fw-bold text-primary">#{{ Auth::id() }}</span> | Astro ID: <span class="fw-bold text-dark">AST-{{ Auth::user()->astrologer?->id }}</span>
+                                        </div>
+                                        @if(Auth::user()->astrologer?->referral_code)
+                                            <div class="text-warning font-monospace small fw-bold mt-1">
+                                                <i class="bi bi-qr-code me-1"></i>Code: {{ Auth::user()->astrologer->referral_code }}
+                                            </div>
+                                        @endif
+                                    </li>
 
-                                <i class="bi bi-person-circle"></i>
+                                    <li>
+                                        <a class="dropdown-item fw-bold text-primary py-2"
+                                           href="{{ route('astrologer.dashboard') }}">
+                                            <i class="bi bi-speedometer2 me-2"></i>
+                                            Astrologer Panel Dashboard
+                                        </a>
+                                    </li>
 
-                                <span>
-                                    {{ Auth::guard('web')->user()->first_name }}
-                                </span>
+                                    <li>
+                                        <a class="dropdown-item py-2"
+                                           href="{{ route('astrologer.wallet.index') }}">
+                                            <i class="bi bi-wallet2 me-2 text-success"></i>
+                                            My Wallet & Balance
+                                        </a>
+                                    </li>
 
-                            </button>
+                                    <li>
+                                        <a class="dropdown-item py-2"
+                                           href="{{ route('astrologer.withdrawals.index') }}">
+                                            <i class="bi bi-cash-stack me-2 text-warning"></i>
+                                            Withdrawal Requests
+                                        </a>
+                                    </li>
 
+                                    <li>
+                                        <a class="dropdown-item py-2"
+                                           href="{{ route('astrologer.referrals.index') }}">
+                                            <i class="bi bi-link-45deg me-2 text-info"></i>
+                                            Referral Links & Products
+                                        </a>
+                                    </li>
 
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm"
-                                aria-labelledby="userMenuButton">
+                                    <li>
+                                        <a class="dropdown-item py-2"
+                                           href="{{ route('astrologer.profile.index') }}">
+                                            <i class="bi bi-person-gear me-2 text-secondary"></i>
+                                            Partner Profile
+                                        </a>
+                                    </li>
 
-                                <li>
-                                    <h6 class="dropdown-header">
-                                        Logged in as customer
-                                    </h6>
-                                </li>
+                                    <li><hr class="dropdown-divider my-1"></li>
 
-                                <li>
-                                    <a class="dropdown-item"
-                                       href="{{ route('user.dashboard') }}">
+                                    <li>
+                                        <a class="dropdown-item small text-muted"
+                                           href="{{ route('user.dashboard') }}">
+                                            <i class="bi bi-person me-2"></i>
+                                            Customer Dashboard
+                                        </a>
+                                    </li>
 
-                                        <i class="bi bi-speedometer2 me-2 text-primary"></i>
-                                        My Dashboard
+                                    <li>
+                                        <form action="{{ route('astrologer.logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger py-2">
+                                                <i class="bi bi-box-arrow-right me-2"></i>
+                                                Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @else
+                            <!-- Customer User Panel Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-astro-outline dropdown-toggle d-flex align-items-center gap-2"
+                                        type="button"
+                                        id="userMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span>
+                                        {{ Auth::guard('web')->user()->first_name }}
+                                    </span>
+                                </button>
 
-                                    </a>
-                                </li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm"
+                                    aria-labelledby="userMenuButton">
+                                    <li class="px-3 py-2 bg-light border-bottom">
+                                        <span class="small text-muted d-block">Customer Account</span>
+                                        <span class="small font-monospace text-muted">User ID: #{{ Auth::id() }}</span>
+                                    </li>
 
-                                <li>
-                                    <a class="dropdown-item"
-                                       href="{{ route('user.bookings.index') }}">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{{ route('user.dashboard') }}">
+                                            <i class="bi bi-speedometer2 me-2 text-primary"></i>
+                                            My Dashboard
+                                        </a>
+                                    </li>
 
-                                        <i class="bi bi-calendar-event me-2 text-warning"></i>
-                                        My Consultations
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{{ route('user.bookings.index') }}">
+                                            <i class="bi bi-calendar-event me-2 text-warning"></i>
+                                            My Consultations
+                                        </a>
+                                    </li>
 
-                                    </a>
-                                </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
 
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-
-                                <li>
-
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-
-                                        <button type="submit"
-                                                class="dropdown-item text-danger">
-
-                                            <i class="bi bi-box-arrow-right me-2"></i>
-                                            Logout
-
-                                        </button>
-
-                                    </form>
-
-                                </li>
-
-                            </ul>
-
-                        </div>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="dropdown-item text-danger">
+                                                <i class="bi bi-box-arrow-right me-2"></i>
+                                                Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endif
 
                     @else
+                        <a href="{{ route('astrologer.login') }}"
+                           class="btn btn-outline-warning text-dark btn-sm d-none d-xl-inline-flex align-items-center gap-1 me-1 notranslate" translate="no"
+                           title="Astrologer Partner Portal">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            Astrologer Portal
+                        </a>
 
                         <a href="{{ route('login') }}"
                            class="btn btn-astro-outline me-1 notranslate" translate="no">
-
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             Login
-
                         </a>
 
                         <a href="{{ route('register') }}"
                            class="btn btn-astro-gold notranslate" translate="no">
-
                             <i class="bi bi-person-plus me-1"></i>
                             Register
-
                         </a>
-
                     @endauth
 
                 </div>
@@ -727,7 +810,44 @@
                 </div>
 
 
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-2 col-md-6">
+
+                    <h5 class="footer-heading text-warning">
+                        Astrologers
+                    </h5>
+
+                    <ul class="list-unstyled small">
+
+                        <li class="mb-2">
+                            <a href="{{ route('astrologer.login') }}" class="text-warning fw-semibold">
+                                <i class="bi bi-star-fill me-1"></i> Astrologer Login
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('astrologer.register') }}">
+                                Join as Astrologer
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('astrologer.dashboard') }}">
+                                Partner Dashboard
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a href="{{ route('astrologer.withdrawals.index') }}">
+                                Payouts & Wallet
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="col-lg-3 col-md-6">
 
                     <h5 class="footer-heading">
                         Astrology Disclaimer

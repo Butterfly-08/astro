@@ -20,6 +20,9 @@ class AuthController extends Controller
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::guard('web')->check()) {
+            if (Auth::guard('web')->user()->isAstrologer()) {
+                return redirect()->route('astrologer.dashboard');
+            }
             return redirect()->route('user.dashboard');
         }
 
@@ -47,6 +50,14 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::guard('web')->user();
+
+            if ($user->isAstrologer()) {
+                return redirect()->intended(route('astrologer.dashboard'))
+                    ->with(
+                        'success',
+                        'Welcome to your Astrologer Panel, ' . ($user->astrologer?->display_name ?? $user->first_name ?? $user->full_name) . '!'
+                    );
+            }
 
             return redirect()->intended(route('user.dashboard'))
                 ->with(

@@ -295,4 +295,342 @@
         </div>
     </div>
 </div>
+
+<!-- ======================================================================= -->
+<!-- Astrologers Performance & Activity Reports (Bookings & Orders)          -->
+<!-- ======================================================================= -->
+<div class="mt-5 mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-bar-chart-fill me-1"></i> Reports</span>
+                <h4 class="fw-bold mb-0 text-dark">Astrologers Booking & Orders Reports</h4>
+            </div>
+            <p class="text-muted small mb-0 mt-1">
+                Comprehensive activity report showing consultation bookings taken and e-commerce store orders referred/handled by each astrologer
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.bookings.index') }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-calendar2-check me-1"></i> View All Bookings
+            </a>
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-bag-check me-1"></i> View All Orders
+            </a>
+        </div>
+    </div>
+
+    <!-- Report Metric Highlights -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-primary border-4">
+                <span class="text-muted small text-uppercase fw-semibold">Bookings Taken</span>
+                <h4 class="fw-bold my-1 text-primary">{{ number_format($astrologerBookingsSummary['total_bookings']) }}</h4>
+                <small class="text-success fw-semibold">
+                    <i class="bi bi-check-circle-fill me-1"></i>{{ number_format($astrologerBookingsSummary['completed_bookings']) }} Done
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-purple border-4" style="border-left-color: #6f42c1 !important;">
+                <span class="text-muted small text-uppercase fw-semibold">Store Orders Taken</span>
+                <h4 class="fw-bold my-1 text-dark" style="color: #6f42c1 !important;">{{ number_format($astrologerOrdersSummary['total_astrologer_orders']) }}</h4>
+                <small class="text-success fw-semibold">
+                    <i class="bi bi-truck me-1"></i>{{ number_format($astrologerOrdersSummary['completed_astrologer_orders']) }} Delivered
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-success border-4">
+                <span class="text-muted small text-uppercase fw-semibold">Calls Attended</span>
+                <h4 class="fw-bold my-1 text-success">{{ number_format($astrologerCallsSummary['attended_calls']) }}</h4>
+                <small class="text-muted">
+                    <i class="bi bi-telephone-inbound-fill text-success me-1"></i>Completed calls
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-danger border-4">
+                <span class="text-muted small text-uppercase fw-semibold">Calls Ignored</span>
+                <h4 class="fw-bold my-1 text-danger">{{ number_format($astrologerCallsSummary['ignored_calls']) }}</h4>
+                <small class="text-danger fw-semibold">
+                    <i class="bi bi-telephone-x-fill me-1"></i>Rejected / Missed
+                </small>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-warning border-4">
+                <span class="text-muted small text-uppercase fw-semibold">Bookings Revenue</span>
+                <h4 class="fw-bold my-1 text-warning">₹{{ number_format($astrologerBookingsSummary['total_booking_revenue'], 0) }}</h4>
+                <small class="text-muted">Gross fees</small>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-2">
+            <div class="card border-0 shadow-sm rounded-3 p-3 bg-white h-100 border-start border-info border-4" style="border-left-color: #0dcaf0 !important;">
+                <span class="text-muted small text-uppercase fw-semibold">Store Orders Value</span>
+                <h4 class="fw-bold my-1 text-dark">₹{{ number_format($astrologerOrdersSummary['total_orders_value'], 0) }}</h4>
+                <small class="text-success fw-semibold">₹{{ number_format($astrologerOrdersSummary['total_commissions_generated'], 0) }} Comm.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Astrologers Performance Table -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h6 class="mb-0 fw-bold"><i class="bi bi-table text-warning me-2"></i> Astrologer Activity Breakdown (Bookings, Orders & Calls)</h6>
+                <small class="text-muted">Direct metrics per astrologer for consultation sessions, store orders taken, and call attendance</small>
+            </div>
+            <span class="badge bg-light text-dark border">{{ count($astrologersPerformance) }} Astrologers</span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase">
+                        <tr>
+                            <th class="ps-4">Astrologer</th>
+                            <th class="text-center">Bookings Taken</th>
+                            <th class="text-center">Calls Attended</th>
+                            <th class="text-center">Calls Ignored</th>
+                            <th class="text-end">Bookings Revenue</th>
+                            <th class="text-center">Orders Taken</th>
+                            <th class="text-center">Orders Delivered</th>
+                            <th class="text-end">Orders Value</th>
+                            <th class="text-end">Commission</th>
+                            <th class="text-end">Wallet Balance</th>
+                            <th class="pe-4 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($astrologersPerformance as $perf)
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle bg-warning bg-opacity-25 text-dark fw-bold d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-size: 0.85rem;">
+                                            {{ substr($perf->display_name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('admin.astrologers.show', $perf) }}" class="fw-bold text-dark text-decoration-none">
+                                                {{ $perf->display_name }}
+                                            </a>
+                                            <div class="small text-muted font-monospace" style="font-size: 0.75rem;">
+                                                Astro ID: <strong class="text-dark">AST-{{ $perf->id }}</strong>
+                                                @if($perf->referral_code)
+                                                    &bull; Code: <span class="text-warning fw-semibold">{{ $perf->referral_code }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1">
+                                        {{ $perf->total_bookings_count }}
+                                    </span>
+                                    <div class="text-muted" style="font-size: 0.72rem;">{{ $perf->completed_bookings_count }} done</div>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-success-subtle text-success fw-bold px-2 py-1">
+                                        <i class="bi bi-telephone-inbound-fill me-1"></i>{{ $perf->attended_calls_count }}
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge {{ $perf->ignored_calls_count > 0 ? 'bg-danger-subtle text-danger' : 'bg-light text-muted border' }} fw-bold px-2 py-1">
+                                        <i class="bi bi-telephone-x-fill me-1"></i>{{ $perf->ignored_calls_count }}
+                                    </span>
+                                </td>
+
+                                <td class="text-end fw-bold text-dark">
+                                    ₹{{ number_format($perf->total_booking_revenue ?? 0, 2) }}
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-info-subtle text-dark fw-bold px-2 py-1">
+                                        {{ $perf->total_orders_count }}
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-success-subtle text-success fw-semibold">
+                                        {{ $perf->completed_orders_count }}
+                                    </span>
+                                    @if($perf->pending_orders_count > 0)
+                                        <span class="badge bg-secondary-subtle text-secondary fw-semibold ms-1">
+                                            {{ $perf->pending_orders_count }} open
+                                        </span>
+                                    @endif
+                                </td>
+
+                                <td class="text-end fw-bold text-dark">
+                                    ₹{{ number_format($perf->total_orders_revenue, 2) }}
+                                </td>
+
+                                <td class="text-end fw-bold text-success">
+                                    ₹{{ number_format($perf->total_commissions_earned, 2) }}
+                                </td>
+
+                                <td class="text-end font-monospace text-primary fw-semibold">
+                                    ₹{{ number_format($perf->wallet?->available_balance ?? 0, 2) }}
+                                </td>
+
+                                <td class="pe-4 text-center">
+                                    <a href="{{ route('admin.bookings.index', ['astrologer_id' => $perf->id]) }}" class="btn btn-sm btn-light border py-1 px-2" title="View Astrologer Bookings">
+                                        <i class="bi bi-calendar-event text-primary"></i>
+                                    </a>
+                                    <a href="{{ route('admin.orders.index', ['astrologer_id' => $perf->id]) }}" class="btn btn-sm btn-light border py-1 px-2 ms-1" title="View Astrologer Orders">
+                                        <i class="bi bi-bag text-success"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10" class="text-center py-4 text-muted">
+                                    No astrologers found in database.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Grids (Side by Side) -->
+    <div class="row g-4">
+        <!-- Recent Consultation Bookings -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-calendar2-event text-primary me-2"></i> Recent Consultation Bookings</h6>
+                        <small class="text-muted">Latest appointments booked with astrologers</small>
+                    </div>
+                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Booking #</th>
+                                    <th>Astrologer</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th class="pe-3 text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentAstrologerBookings as $bk)
+                                    <tr>
+                                        <td class="ps-3 fw-semibold">
+                                            <a href="{{ route('admin.bookings.show', $bk) }}" class="text-decoration-none">
+                                                {{ $bk->booking_number ?? '#' . $bk->id }}
+                                            </a>
+                                            <div class="text-muted" style="font-size: 0.72rem;">{{ $bk->booking_date?->format('M d, Y') }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold text-dark">{{ $bk->astrologer?->display_name ?? '—' }}</div>
+                                            <small class="text-muted font-monospace">AST-{{ $bk->astrologer_id }}</small>
+                                        </td>
+                                        <td>{{ $bk->user?->full_name ?? 'Customer' }}</td>
+                                        <td class="fw-bold">₹{{ number_format($bk->amount, 2) }}</td>
+                                        <td class="pe-3 text-end">
+                                            @if($bk->status === 'completed')
+                                                <span class="badge bg-success-subtle text-success">Completed</span>
+                                            @elseif($bk->status === 'confirmed')
+                                                <span class="badge bg-primary-subtle text-primary">Confirmed</span>
+                                            @elseif($bk->status === 'cancelled')
+                                                <span class="badge bg-danger-subtle text-danger">Cancelled</span>
+                                            @else
+                                                <span class="badge bg-warning-subtle text-warning">Pending</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            No recent bookings found.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Astrologer Store Orders -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-bag-check text-success me-2"></i> Recent Astrologer Orders Taken</h6>
+                        <small class="text-muted">Latest e-commerce sales attributed to astrologers</small>
+                    </div>
+                    <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 small">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-3">Order #</th>
+                                    <th>Referred By</th>
+                                    <th>Customer</th>
+                                    <th>Order Value</th>
+                                    <th class="pe-3 text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentAstrologerOrders as $ord)
+                                    <tr>
+                                        <td class="ps-3 fw-semibold">
+                                            <a href="{{ route('admin.orders.show', $ord) }}" class="text-decoration-none">
+                                                {{ $ord->order_number }}
+                                            </a>
+                                            <div class="text-muted" style="font-size: 0.72rem;">{{ $ord->created_at->format('M d, Y') }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold text-dark">{{ $ord->referrerAstrologer?->display_name ?? 'Astrologer' }}</div>
+                                            <small class="text-muted font-monospace">AST-{{ $ord->referrer_astrologer_id }}</small>
+                                        </td>
+                                        <td>{{ $ord->user?->full_name ?? ($ord->shipping_name ?? 'Customer') }}</td>
+                                        <td class="fw-bold">₹{{ number_format($ord->total_amount, 2) }}</td>
+                                        <td class="pe-3 text-end">
+                                            @if($ord->status === 'delivered')
+                                                <span class="badge bg-success-subtle text-success">Delivered</span>
+                                            @elseif($ord->status === 'shipped')
+                                                <span class="badge bg-info-subtle text-info">Shipped</span>
+                                            @elseif($ord->status === 'cancelled')
+                                                <span class="badge bg-danger-subtle text-danger">Cancelled</span>
+                                            @else
+                                                <span class="badge bg-warning-subtle text-warning">{{ ucfirst($ord->status) }}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            No astrologer-attributed orders found yet.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

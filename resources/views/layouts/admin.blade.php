@@ -421,7 +421,7 @@
                     </a>
                 </div>
                 <div class="nav-item-custom">
-                    <a href="#reports" class="nav-link-custom">
+                    <a href="{{ route('admin.reports.index') }}" class="nav-link-custom {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                         <i class="bi bi-bar-chart-fill"></i>
                         <span>Reports</span>
                     </a>

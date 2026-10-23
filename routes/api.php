@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdminAuthApiController;
+use App\Http\Controllers\Api\Admin\AdminWithdrawalApiController;
 use App\Http\Controllers\Api\AstrologerApiController;
 use App\Http\Controllers\Api\AstrologerDirectoryApiController;
 use App\Http\Controllers\Api\AuthApiController;
@@ -148,10 +150,36 @@ Route::prefix('v1')->group(function () {
         Route::get('/dashboard', [AstrologerApiController::class, 'dashboard']);
         Route::get('/wallet', [AstrologerApiController::class, 'wallet']);
         Route::get('/commissions', [AstrologerApiController::class, 'commissions']);
+
+        // Astrologer Withdrawal Requests
+        Route::get('/withdrawals/limits', [AstrologerApiController::class, 'withdrawalLimits']);
         Route::get('/withdrawals', [AstrologerApiController::class, 'withdrawals']);
+        Route::get('/withdrawals/{id}', [AstrologerApiController::class, 'showWithdrawal']);
         Route::post('/withdrawals', [AstrologerApiController::class, 'requestWithdrawal']);
+        Route::post('/withdrawals/{id}/cancel', [AstrologerApiController::class, 'cancelWithdrawal']);
+
         Route::get('/referral-links', [AstrologerApiController::class, 'referralLinks']);
         Route::post('/logout', [AstrologerApiController::class, 'logout']);
+    });
+
+    // ----------------------------------------------------------------------
+    // 3b. Admin Portal API — Withdrawal & Payout Management
+    // ----------------------------------------------------------------------
+    Route::prefix('admin')->group(function () {
+        Route::post('/login', [AdminAuthApiController::class, 'login']);
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/me', [AdminAuthApiController::class, 'me']);
+            Route::post('/logout', [AdminAuthApiController::class, 'logout']);
+
+            // Admin Withdrawal Management
+            Route::get('/withdrawals', [AdminWithdrawalApiController::class, 'index']);
+            Route::get('/withdrawals/{id}', [AdminWithdrawalApiController::class, 'show']);
+            Route::post('/withdrawals/{id}/approve', [AdminWithdrawalApiController::class, 'approve']);
+            Route::post('/withdrawals/{id}/process', [AdminWithdrawalApiController::class, 'markProcessing']);
+            Route::post('/withdrawals/{id}/pay', [AdminWithdrawalApiController::class, 'markPaid']);
+            Route::post('/withdrawals/{id}/reject', [AdminWithdrawalApiController::class, 'reject']);
+        });
     });
 
     // ----------------------------------------------------------------------

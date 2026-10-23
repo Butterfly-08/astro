@@ -78,6 +78,15 @@
                     <a href="{{ route('register') }}" class="text-decoration-none fw-bold text-primary">Create Account</a>
                 </div>
 
+                <div class="p-3 mb-3 rounded-3 text-center" style="background-color: rgba(245, 176, 65, 0.12); border: 1px dashed #F5B041;">
+                    <div class="small fw-bold text-dark mb-1">
+                        <i class="bi bi-star-fill text-warning me-1"></i> Are you a verified Astrologer?
+                    </div>
+                    <a href="{{ route('astrologer.login') }}" class="btn btn-sm btn-outline-warning text-dark fw-bold w-100">
+                        <i class="bi bi-person-badge me-1"></i> Sign In to Astrologer Partner Portal
+                    </a>
+                </div>
+
                 <div class="text-center pt-2 border-top">
                     <a href="{{ route('home') }}" class="text-decoration-none text-muted small">
                         <i class="bi bi-arrow-left me-1"></i> Back to AstroVani Home

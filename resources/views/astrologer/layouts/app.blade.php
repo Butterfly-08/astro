@@ -277,13 +277,25 @@
                 <div class="d-flex align-items-center gap-3">
                     <div>
                         <h5 class="mb-0 fw-bold">@yield('page_title', 'Partner Dashboard')</h5>
-                        <small class="text-muted">Welcome, {{ Auth::user()->astrologer->display_name ?? Auth::user()->full_name }}</small>
+                        <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+                            <span class="small text-muted">Welcome, <strong>{{ Auth::user()->astrologer->display_name ?? Auth::user()->full_name }}</strong></span>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace" style="font-size: 0.75rem;">
+                                User ID: #{{ Auth::id() }}
+                            </span>
+                            <span class="badge bg-warning-subtle text-dark border border-warning font-monospace" style="font-size: 0.75rem;">
+                                Astrologer ID: AST-{{ Auth::user()->astrologer?->id }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
+                    <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary d-none d-md-inline-flex align-items-center gap-1" target="_blank">
+                        <i class="bi bi-globe"></i> View Website
+                    </a>
+
                     @if(Auth::user()->astrologer?->referral_code)
-                        <div class="d-none d-md-flex align-items-center gap-2">
+                        <div class="d-none d-lg-flex align-items-center gap-2">
                             <span class="small text-muted">My Code:</span>
                             <span class="referral-pill" id="topbarReferralCode">{{ Auth::user()->astrologer->referral_code }}</span>
                             <button type="button" class="btn btn-sm btn-light border" onclick="navigator.clipboard.writeText('{{ url('/ref/' . Auth::user()->astrologer->referral_code) }}'); alert('Referral link copied to clipboard!');">
@@ -298,8 +310,16 @@
                             <span class="fw-semibold small">{{ Auth::user()->astrologer->display_name ?? Auth::user()->first_name }}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li class="px-3 py-2 bg-light border-bottom">
+                                <span class="small text-muted d-block">Astrologer Account</span>
+                                <span class="small font-monospace text-muted">User #{{ Auth::id() }} | Astro #{{ Auth::user()->astrologer?->id }}</span>
+                            </li>
                             <li><a class="dropdown-item" href="{{ route('astrologer.profile.index') }}"><i class="bi bi-person me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="{{ route('astrologer.wallet.index') }}"><i class="bi bi-wallet2 me-2"></i> Wallet</a></li>
+                            <li><a class="dropdown-item" href="{{ route('astrologer.wallet.index') }}"><i class="bi bi-wallet2 me-2"></i> Wallet & Payouts</a></li>
+                            <li><a class="dropdown-item" href="{{ route('astrologer.withdrawals.index') }}"><i class="bi bi-cash-stack me-2 text-warning"></i> Withdrawal Claims</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('home') }}"><i class="bi bi-globe me-2"></i> Public Website</a></li>
+                            <li><a class="dropdown-item" href="{{ route('user.dashboard') }}"><i class="bi bi-person-circle me-2"></i> Customer View</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('astrologer.logout') }}" method="POST">

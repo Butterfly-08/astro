@@ -214,6 +214,30 @@ class Astrologer extends Model
         return $this->hasMany(Booking::class)->latest();
     }
 
+    public function referredOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'referrer_astrologer_id');
+    }
+
+    public function calls(): HasMany
+    {
+        return $this->hasMany(Booking::class)->where('consultation_type', 'call');
+    }
+
+    public function attendedCalls(): HasMany
+    {
+        return $this->hasMany(Booking::class)
+            ->where('consultation_type', 'call')
+            ->where('status', 'completed');
+    }
+
+    public function ignoredCalls(): HasMany
+    {
+        return $this->hasMany(Booking::class)
+            ->where('consultation_type', 'call')
+            ->whereIn('status', ['rejected', 'cancelled']);
+    }
+
     // Referral system relationships
 
     public function referrals(): HasMany
