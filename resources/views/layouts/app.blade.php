@@ -32,6 +32,46 @@
             --astro-border: #E5E7EB;
         }
 
+        /* Dark Mode Global Styles */
+        [data-theme="dark"] {
+            --astro-bg-cream: #120822 !important;
+            --astro-text-dark: #F3F4F6 !important;
+            --astro-text-muted: #9CA3AF !important;
+            --astro-border: #374151 !important;
+        }
+
+        [data-theme="dark"] body {
+            background-color: #120822 !important;
+            color: #F3F4F6 !important;
+        }
+
+        [data-theme="dark"] .astro-navbar {
+            background-color: #1A0B2E !important;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4) !important;
+            border-bottom: 1px solid #374151 !important;
+        }
+
+        [data-theme="dark"] .nav-link {
+            color: #D1D5DB !important;
+        }
+
+        [data-theme="dark"] .nav-link:hover,
+        [data-theme="dark"] .nav-link.active {
+            color: #F5B041 !important;
+        }
+
+        [data-theme="dark"] .website-language-select {
+            background-color: #2D124D !important;
+            color: #F3F4F6 !important;
+            border-color: #374151 !important;
+        }
+
+        [data-theme="dark"] .card {
+            background-color: #1A0B2E !important;
+            color: #F3F4F6 !important;
+            border-color: #374151 !important;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--astro-bg-cream);
@@ -39,83 +79,35 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h1, h2, h3, h4, h5, h6, .brand-font {
             font-family: 'Outfit', sans-serif;
         }
 
-        /* Top Bar */
-        .astro-topbar {
-            background-color: var(--astro-purple-dark);
-            color: rgba(255, 255, 255, 0.75);
-            font-size: 0.85rem;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(245, 176, 65, 0.2);
-        }
-
         /* Main Navbar */
         .astro-navbar {
             background-color: #FFFFFF;
             box-shadow: 0 2px 15px rgba(26, 11, 46, 0.06);
-            padding: 14px 0;
+            padding: 12px 0;
+            transition: background-color 0.3s ease;
         }
 
         .astro-logo {
-            font-size: 1.65rem;
-            font-weight: 700;
-            color: var(--astro-purple);
             display: flex;
             align-items: center;
-            gap: 8px;
             text-decoration: none;
-            max-width: 100%;
         }
 
-        .astro-logo > div {
-            display: inline-flex;
-            align-items: flex-start;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .astro-logo .logo-star {
-            color: var(--astro-gold);
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .astro-logo span.tagline {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--astro-gold-hover);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: block;
-            margin-top: -4px;
-            width: 100%;
-            line-height: 1.2;
-            white-space: normal;
+        .astro-logo img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
         }
 
         @media (max-width: 991.98px) {
-            .astro-logo {
-                font-size: clamp(1.55rem, 6vw, 2.1rem);
-            }
-
-            .astro-logo > div {
-                gap: 5px;
-            }
-
-            .astro-logo .logo-star {
-                font-size: 1.3rem;
-            }
-
-            .astro-logo span.tagline {
-                font-size: 0.62rem;
-                letter-spacing: 0.7px;
-            }
-
             .navbar-collapse {
                 width: 100%;
             }
@@ -130,20 +122,10 @@
             }
         }
 
-        @media (max-width: 575.98px) {
-            .astro-logo {
-                max-width: 58vw;
-            }
-
-            .astro-logo > div {
-                row-gap: 2px;
-            }
-        }
-
         .nav-link {
             font-weight: 500;
             color: #374151;
-            padding: 8px 14px !important;
+            padding: 8px 12px !important;
             transition: all 0.2s ease;
         }
 
@@ -152,43 +134,46 @@
             color: var(--astro-purple) !important;
         }
 
+        /* Compact Website Language Select */
         .website-language-select {
-            min-width: 132px;
+            min-width: 105px !important;
             border-color: var(--astro-border);
             color: var(--astro-purple);
-            font-size: 0.82rem;
-            padding-top: 7px;
-            padding-bottom: 7px;
+            font-size: 0.78rem !important;
+            padding: 5px 10px !important;
         }
 
-                                #google_translate_element {
+        #google_translate_element {
             display: none;
+        }
+
+        /* Compact Buttons (Gold, Outline, Cart, Login, Register) */
+        .btn-astro-gold,
+        .btn-astro-outline,
+        .btn-cart {
+            font-size: 0.8rem !important;
+            padding: 5px 12px !important;
+            border-radius: 6px !important;
+            font-weight: 600;
         }
 
         /* Gold Button */
         .btn-astro-gold {
             background-color: var(--astro-gold);
             color: var(--astro-purple-dark);
-            font-weight: 600;
-            border-radius: 8px;
             border: none;
-            padding: 8px 20px;
             transition: all 0.25s ease;
         }
 
         .btn-astro-gold:hover {
             background-color: var(--astro-gold-hover);
             color: #FFFFFF;
-            transform: translateY(-1px);
         }
 
         /* Outline Purple Button */
         .btn-astro-outline {
             border: 1.5px solid var(--astro-purple);
             color: var(--astro-purple);
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 7px 18px;
             transition: all 0.25s ease;
         }
 
@@ -202,14 +187,11 @@
             position: relative;
             border: 1.5px solid var(--astro-purple);
             color: var(--astro-purple);
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 7px 15px;
             transition: all 0.25s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 6px;
         }
 
         .btn-cart:hover {
@@ -218,10 +200,10 @@
         }
 
         .cart-badge {
-            font-size: 0.68rem;
-            min-width: 19px;
-            height: 19px;
-            padding: 2px 5px;
+            font-size: 0.6rem !important;
+            min-width: 17px !important;
+            height: 17px !important;
+            padding: 1px 4px;
             border-radius: 50%;
             background-color: var(--astro-gold);
             color: var(--astro-purple-dark);
@@ -229,6 +211,15 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* Hide horizontal scrollbars smoothly */
+        div::-webkit-scrollbar {
+            display: none !important;
+        }
+        div {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* Footer */
@@ -319,20 +310,14 @@
 
         </div>
     </div>
-
-
     <!-- Main Navigation -->
     <nav class="navbar navbar-expand-lg astro-navbar sticky-top">
 
         <div class="container">
 
-            <!-- Logo -->
+            <!-- Logo (Navagunjara Image Logo) -->
             <a class="astro-logo notranslate" href="{{ route('home') }}" translate="no">
-                <div>
-                    <i class="bi bi-sun-fill logo-star"></i>
-                    <span class="notranslate" translate="no">AstroVani</span>
-                    <span class="tagline notranslate" translate="no">Guidance & Spiritual Shop</span>
-                </div>
+                <img src="{{ asset('images/Navagunjara.webp') }}" alt="AstroVani Logo">
             </a>
 
 
@@ -356,28 +341,28 @@
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('home') ? 'active text-primary fw-bold' : '' }}"
                            href="{{ route('home') }}" translate="no">
                             Home
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}"
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('astrologers.*') ? 'active text-primary fw-bold' : '' }}"
                            href="{{ route('astrologers.index') }}" translate="no">
                             Astrologers
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}"
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('services.*') ? 'active text-primary fw-bold' : '' }}"
                            href="{{ route('services.index') }}" translate="no">
                             Services
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}"
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('shop.*') ? 'active text-primary fw-bold' : '' }}"
                            href="{{ route('shop.index') }}" translate="no">
 
                             <i class="bi bi-bag-heart me-1 text-warning"></i>
@@ -387,13 +372,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('horoscopes.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('horoscopes.index') }}" translate="no">
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('horoscopes.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('horoscopes.index') }}" translate="no">
                             Horoscope
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link notranslate {{ request()->routeIs('blogs.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('blogs.index') }}" translate="no">
+                        <a class="nav-link text-nowrap notranslate {{ request()->routeIs('blogs.*') ? 'active text-primary fw-bold' : '' }}" href="{{ route('blogs.index') }}" translate="no">
                             Blogs
                         </a>
                     </li>
@@ -404,20 +389,30 @@
                 <!-- Right Side -->
                 <div class="d-flex align-items-center gap-2">
                     <label class="visually-hidden" for="website-language">Website language</label>
-                    <select id="website-language" class="form-select website-language-select" aria-label="Website language" onchange="changeWebsiteLanguage(this.value)">
-                        <option value="en">English</option>
-                        <option value="hi">Hindi</option>
-                        <option value="ta">Tamil</option>
-                        <option value="te">Telugu</option>
-                        <option value="bn">Bengali</option>
-                        <option value="mr">Marathi</option>
-                        <option value="gu">Gujarati</option>
-                        <option value="pa">Punjabi</option>
-                    </select>
+
+                    <!-- Language Dropdown Wrapper (Keeps dropdown list in English) -->
+                    <div class="notranslate" translate="no">
+                        <select id="website-language" class="form-select website-language-select" aria-label="Website language" onchange="changeWebsiteLanguage(this.value)">
+                            <option value="en">English</option>
+                            <option value="hi">Hindi</option>
+                            <option value="ta">Tamil</option>
+                            <option value="te">Telugu</option>
+                            <option value="bn">Bengali</option>
+                            <option value="mr">Marathi</option>
+                            <option value="gu">Gujarati</option>
+                            <option value="pa">Punjabi</option>
+                        </select>
+                    </div>
+
                     <div id="google_translate_element" aria-hidden="true"></div>
 
+                    <!-- Dark Mode Toggle Button -->
+                    <button type="button" class="btn btn-astro-outline notranslate" id="darkModeToggle" onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" translate="no">
+                        <i class="bi bi-moon-stars text-warning" id="darkModeIcon"></i>
+                    </button>
+
                     <!-- CART BUTTON -->
-                    <a href="{{ route('cart.index') }}" class="btn-cart notranslate" translate="no">
+                    <a href="{{ route('cart.index') }}" class="btn-cart notranslate text-nowrap" translate="no">
 
                         <i class="bi bi-cart3"></i>
 
@@ -461,7 +456,6 @@
                                             </div>
                                         @endif
                                     </li>
-
                                     <li>
                                         <a class="dropdown-item fw-bold text-primary py-2"
                                            href="{{ route('astrologer.dashboard') }}">
@@ -587,13 +581,15 @@
                         </a>
 
                         <a href="{{ route('login') }}"
-                           class="btn btn-astro-outline me-1 notranslate" translate="no">
+                           class="btn btn-astro-outline me-1 notranslate text-nowrap" translate="no">
+
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             Login
                         </a>
 
                         <a href="{{ route('register') }}"
-                           class="btn btn-astro-gold notranslate" translate="no">
+                           class="btn btn-astro-gold notranslate text-nowrap" translate="no">
+
                             <i class="bi bi-person-plus me-1"></i>
                             Register
                         </a>
@@ -688,14 +684,8 @@
 
                 <div class="col-lg-4 col-md-6">
 
-                    <div class="astro-logo mb-3 text-white">
-
-                        <i class="bi bi-sun-fill logo-star"></i>
-
-                        <span class="text-white">
-                            <span class="notranslate" translate="no">AstroVani</span>
-                        </span>
-
+                    <div class="astro-logo mb-3">
+                        <img src="{{ asset('images/Navagunjara.webp') }}" alt="AstroVani Logo" style="height: 45px;">
                     </div>
 
                     <p class="text-white-50 small mb-3">
@@ -955,6 +945,34 @@
         if (websiteLanguageSelect) {
             websiteLanguageSelect.value = selectedWebsiteLanguage();
         }
+
+        // Dark Mode Toggle Logic
+        function toggleDarkMode() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('astro_theme', newTheme);
+
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('darkModeIcon');
+            if (icon) {
+                if (theme === 'dark') {
+                    icon.className = 'bi bi-sun-fill text-warning';
+                } else {
+                    icon.className = 'bi bi-moon-stars text-warning';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('astro_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        });
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
     <script src="{{ asset('js/astro-live-wallpaper.js') }}"></script>

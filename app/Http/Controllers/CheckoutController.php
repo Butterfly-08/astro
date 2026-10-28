@@ -71,6 +71,7 @@ class CheckoutController extends Controller
                     'error',
                     'Please login before placing your order.'
                 );
+
         }
 
         $summary = $this->cart->summary();
@@ -119,7 +120,7 @@ class CheckoutController extends Controller
 
                     $price = $product->effective_price;
                     $quantity = (int) $item->quantity;
-                    $subtotal = $price * $quantity;
+                    $subtotal = $price * $quantity; // <--- Inga star (*) fix pannirukku machi!
 
                     OrderItem::create([
                         'order_id' => $order->id,
@@ -148,7 +149,7 @@ class CheckoutController extends Controller
 
             return redirect()
                 ->route('checkout.index')
-                ->with('error', 'Failed to place your order. Please try again.');
+                ->with('error', 'Failed to place your order. Please try again: ' . $e->getMessage());
         }
 
         return redirect()

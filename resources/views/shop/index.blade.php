@@ -12,16 +12,58 @@
 
 <style>
     /* =========================================================
-       SHOP PAGE
+        SHOP PAGE
     ========================================================= */
 
     .shop-page {
         background: #f6f6f6;
         min-height: 100vh;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Dark mode shop page */
+    [data-theme="dark"] .shop-page {
+        background: #120822 !important;
+    }
+
+    [data-theme="dark"] .shop-card,
+    [data-theme="dark"] .section-bar,
+    [data-theme="dark"] .category-strip,
+    [data-theme="dark"] .trust-strip,
+    [data-theme="dark"] .product-wrapper {
+        background-color: #1A0B2E !important;
+        color: #F3F4F6 !important;
+        border-color: #374151 !important;
+    }
+
+    [data-theme="dark"] .filter-title,
+    [data-theme="dark"] .section-bar h5,
+    [data-theme="dark"] .category-item {
+        color: #F3F4F6 !important;
+    }
+
+    [data-theme="dark"] .category-item:hover {
+        background: #2D124D !important;
+        color: #F5B041 !important;
+    }
+
+    [data-theme="dark"] .category-item.active {
+        color: #F5B041 !important;
+        border-bottom-color: #F5B041 !important;
+    }
+
+    [data-theme="dark"] .category-icon {
+        background: #2D124D !important;
+        color: #F5B041 !important;
+    }
+
+    [data-theme="dark"] .category-item.active .category-icon {
+        background: #F5B041 !important;
+        color: #1A0B2E !important;
     }
 
     /* =========================================================
-       SEARCH HEADER
+        SEARCH HEADER
     ========================================================= */
 
     .shop-search-header {
@@ -63,7 +105,7 @@
     }
 
     /* =========================================================
-       CATEGORY ROW
+        CATEGORY ROW
     ========================================================= */
 
     .category-strip {
@@ -78,22 +120,13 @@
         gap: 0;
         overflow-x: auto;
         overflow-y: hidden;
-        scrollbar-width: thin;
-        scrollbar-color: #999 #f5f5f5;
+        scrollbar-width: none; /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
         -webkit-overflow-scrolling: touch;
     }
 
     .category-scroll::-webkit-scrollbar {
-        height: 7px;
-    }
-
-    .category-scroll::-webkit-scrollbar-track {
-        background: #f5f5f5;
-    }
-
-    .category-scroll::-webkit-scrollbar-thumb {
-        background: #999;
-        border-radius: 10px;
+        display: none !important; /* Hide scrollbar for Chrome, Safari, Opera */
     }
 
     /* IMPORTANT: Prevent category items from shrinking */
@@ -146,6 +179,7 @@
         color: #6c3483;
 
         flex-shrink: 0;
+        transition: all 0.2s ease;
     }
 
     .category-item.active .category-icon {
@@ -171,7 +205,7 @@
     }
 
     /* =========================================================
-       PROMO BANNER
+        PROMO BANNER
     ========================================================= */
 
     .promo-banner {
@@ -294,7 +328,7 @@
     }
 
     /* =========================================================
-       SHOP CONTENT
+        SHOP CONTENT
     ========================================================= */
 
     .shop-container {
@@ -348,7 +382,7 @@
     }
 
     /* =========================================================
-       PRODUCT CARD WRAPPER
+        PRODUCT CARD WRAPPER
     ========================================================= */
 
     .product-wrapper {
@@ -374,7 +408,7 @@
     }
 
     /* =========================================================
-       TRUST STRIP
+        TRUST STRIP
     ========================================================= */
 
     .trust-strip {
@@ -422,7 +456,7 @@
     }
 
     /* =========================================================
-       MOBILE
+        MOBILE
     ========================================================= */
 
     @media (max-width: 991px) {
@@ -461,10 +495,6 @@
             padding: 0 13px;
         }
 
-        /*
-         * Mobile category width.
-         * Still fixed so items never overlap.
-         */
         .category-item {
             flex: 0 0 100px;
             width: 100px;
@@ -832,7 +862,7 @@
                                         name="category"
                                         id="cat_{{ $cat->id }}"
                                         value="{{ $cat->slug }}"
-                                        {{ request('category') == $cat->slug ? 'checked' : '' }}
+                                        {{ (request('category') == $cat->slug || (isset($currentCategory) && $currentCategory->id == $cat->id)) ? 'checked' : '' }}
                                         onchange="this.form.submit()"
                                     >
 
@@ -1145,7 +1175,7 @@
 
 
                 {{-- =================================================
-                     TRUST STRIP
+                    TRUST STRIP
                 ================================================== --}}
 
                 <div class="trust-strip">
